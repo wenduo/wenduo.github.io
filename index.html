@@ -1,0 +1,915 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+
+
+  <meta name="keywords" content="Hexo,next" />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="wenduo blog">
+<meta property="og:url" content="http://yoursite.com/blog/index.html">
+<meta property="og:site_name" content="wenduo blog">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="wenduo blog">
+<meta name="twitter:description">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> wenduo blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <div class="container one-column 
+   page-home 
+">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">wenduo blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            歸檔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            標籤
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+  <section id="posts" class="posts-expand">
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/c之函数指针/" itemprop="url">
+                c之函数指针
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T13:15:15+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>函数的本质是表达式的抽象，是堆栈中的一段程序指令</p>
+<ul>
+<li>可以通过函数指针实现接口</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">add</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a+b;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">minus</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a-b;&#125;; </span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">multiply</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a*b;&#125;; </span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">divide</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a/b;&#125; ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">float</span> （*fp）(<span class="keyword">float</span> a,<span class="keyword">float</span> b);</span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">callee</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b,fp p)</span></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> result=<span class="number">0.0</span>;</span><br><span class="line">    result=p(a,b);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">caller</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> result;</span><br><span class="line">    result=callee(<span class="number">1</span>,<span class="number">2</span>,add);</span><br><span class="line">    result=callee(<span class="number">3</span>,<span class="number">5</span>,minus);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过函数指针实现类<br>下文中，aeFileEvent类中包含rfileProc接口。initServer中可为其注册回调函数。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ae.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> aeFileEvent&#123;</span><br><span class="line">    <span class="keyword">int</span> mask;</span><br><span class="line">    aeFileProc *rfileProc;</span><br><span class="line">    aeFileProc * wfileProc;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="keyword">void</span> <span class="title">aeFileProc</span><span class="params">(<span class="keyword">struct</span> aeEventLoop *eventLoop, <span class="keyword">int</span> fd, <span class="keyword">void</span> *clientData, <span class="keyword">int</span> mask)</span></span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//redis.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initServer</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(j = <span class="number">0</span>; j &lt; server.ipfd_count; j++)&#123;</span><br><span class="line">        aeCreateFileEvent(server.el, server.ipfd[j], AE_READABLE, acceptTcpHandler,<span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//networking.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acceptTcpHandler</span><span class="params">(aeEventLoop *el, <span class="keyword">int</span> fd, <span class="keyword">void</span> *privdata, <span class="keyword">int</span> mask)</span></span>&#123;</span><br><span class="line">    <span class="comment">//logic here;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/设计模式/" itemprop="url">
+                设计模式
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T13:15:15+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h3 id="一-singleton:单例模式">一.singleton:单例模式</h3><p><a href="http://www.cnblogs.com/rush/archive/2011/10/30/2229565.html" target="_blank" rel="external">来源</a></p>
+<p>1.<em>单线程实现</em></p>
+<blockquote>
+<p>私有化构造函数<br>私有保存一个自己的instance<br>用public static getInstance 判断创建实例<br>用singleton.getInstance()取</p>
+</blockquote>
+<p>2.<em>多线程下双重检查</em></p>
+<blockquote>
+<p><code>if (singleton== null)     {   
+            synchronized (Singleton.class)   
+            {   
+                if (singleton== null)   
+                {   
+                    singleton= new Singleton();   
+                }   
+            }   
+        }</code></p>
+</blockquote>
+<hr>
+<h3 id="二-IOC:依赖注入">二.IOC:依赖注入</h3><hr>
+<p><em>依赖</em>    ：       调用者创建被调用者实例<br> <em>依赖注入</em>：   容器创建实例并注入调用者</p>
+<hr>
+<h5 id="材料"><em>材料</em></h5><p><a href="http://www.cnblogs.com/leoo2sk/archive/2009/06/17/1504693.html" target="_blank" rel="external">依赖注入那些事-张洋</a></p>
+<blockquote>
+<p><em>ocp原则：</em>对扩展开放，对修改关闭<br><em>面向对象设计原则：</em>明确划分职责<br><em>多态.接口之实质：</em>把逻辑上变化和不变的部分隔离开</p>
+</blockquote>
+<hr>
+<h5 id="原理"><em>原理</em></h5><p>类型1.客户类A定义注入点。其他程序实例化服务类并注入A。 </p>
+<blockquote>
+<p>setter/construction injection：客户类设置服务类数据成员,set函数或构造函数作为注入点。</p>
+</blockquote>
+<p>类型2.系统提供一个factory模式的获取点。客户类需要时自己获取。</p>
+<hr>
+<h3 id="三-工厂模式"><em>三.工厂模式</em></h3><hr>
+<h5 id="材料-1"><em>材料</em></h5><blockquote>
+<p>《大话设计模式》</p>
+<hr>
+</blockquote>
+<h5 id="**">**</h5></span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/代码大全/" itemprop="url">
+                代码大全
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T13:15:15+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><blockquote>
+<p> 按照读书顺序整理<br>述而不作<br>此版为草稿</p>
+</blockquote>
+<hr>
+<hr>
+<p>#第二部分：高质量代码</p>
+<p>##第六章：可工作的类</p>
+<p>####a.好处</p>
+<blockquote>
+<p>提高程序自说明性<br>隐藏细节<br>隔离复杂度<br>流畅的参数传递<br>容易重构<br>…</p>
+</blockquote>
+<p>public下实质就是对外开放的接口，而private则是封装的细节</p>
+<p>#####ADT：应采用尽可能高的抽象</p>
+<p>####b.接口设计原则</p>
+<blockquote>
+<p>1.一个类只实现一个ADT，内聚性要高。对类内杂乱的函数：</p>
+<blockquote>
+<p>转移到其他类里，<br>转移为私用子函数</p>
+</blockquote>
+<p>2.使用一致的抽象层次，混乱的抽象会让程序难以理解：<br>事务层次的类不应该提供容器的操作窗口，<br>如果有操作需求，也应是事务概念的操作</p>
+<p>3.接口是对捕捉到的抽象进行选择，<br>4.检查是否存在相反操作需求<br>5.一半子程序使用一半数据，另一半子 程序使用另外一半数据，那么拆分类吧。<br>6.尽量把语义接口元素转化为编程接口元素。如使用断言等。</p>
+</blockquote>
+<p>总之，接口应该展示一致的抽象。</p>
+<p>####c.封装原则</p>
+<p>对c++等语言代码中,不要在private部分暴露实现细节。<br>封装方法是<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> EmployImplymentation * m_implymenTation</span><br></pre></td></tr></table></figure></p>
+<p>而把细节放入implymentation类里。<br>至少读代码时别去私用部分里找细节</p>
+<p>####封装是对接口编程，而不是对内部实现细节编程。</p>
+<p>#####封装的思维:<br>如果一个人调用库时发现问题，不应该查阅源代码，而是联系作者去修改发布。类内实现细节不应该影响使用者编程。如：</p>
+<blockquote>
+<p>逻辑过程缺失：perform内包含initial，没读细节的使用者先initial再perform就会出bug</p>
+<p>假设过强：使用classA.num代替classB.num.客户不知道他们两个的num相同。</p>
+</blockquote>
+<p>######紧密耦合事实上消除了封装性。</p>
+<p>####e.继承</p>
+<p>######种类：<br>公有：<code>class a:public class baseClass;</code><br>1.baseClass中public元素在a中还是public，base中private元素在a中不可见<br>2.代表 is a 关系</p>
+<p>私有：<code>class b:public class base</code><br>1.base中public元素在b中是private，base中private不可见</p>
+<p>######何时选择继承：<br>1.多个类的共有元素需要一个基类去集中<br>2.派生类必须能够通过基类的接口直接调用</p>
+<p>######3.LSP原则：使用时无须思考不同派生类的语义含义，即基类提供之接口让人直接理解派生类的行为如：</p>
+<blockquote>
+<p>loanAccount的interest和saveAccount中interest中语义不同，就不应在基类account中放入interest元素，interest的继承并没有减少程序员的思考量</p>
+</blockquote>
+<p>4.不要过度设计。为未来工作着想的方式是让眼下之成果尽可能清晰简单。—只有一个派生类的继承很值得怀疑<br>5.case语句下多操作都很类似暗示着多态的需求。<br>  而种类确实不同的操作则不必。<br>6.继承体系尽可能低</p>
+<p>####几点注意事项：<br>1.避免万能类，应该把功能放入万能类他所操作的类上去。<br>2.避免动词命名的类：只有动作而无数据的类只应该是其他类的子程序。</p>
+<p>####在软件的历史中，粒度的增长带来软件开发的进步。语句-子程序-类-包等。</p>
+<hr>
+<p>###第七章：高质量子程序</p>
+<p>####a.子程序作用<br>1.子程序名提供逻辑抽象解释<br>2.避免重复代码<br>3.封装事务过程<br>…….</p>
+<p>####b.设计</p>
+<blockquote>
+<p>内聚性：<br>功能内聚性：只完成一个功能<br>顺序内聚性：顺序执行的操作由上一步ans求下一步<br>通信内聚性：操作共享数据但无其他联系<br>临时内聚    ：startup()等，不相关的操作组合在一起<br>逻辑内聚：通过传入的控制字段选择不同操作。如<br>inputAll（type）</p>
+</blockquote>
+<p>对逻辑内聚：</p>
+<blockquote>
+<p>  不应该用一个程序控制另外一个程序的处理方式。<br>     应把程序分为几个平行程序在上层调用。若有相似的底层操作，则封装成底层函数。<br>     但如程序仅为if/case之内选择不同函数，就成了常用的事件处理器。</p>
+</blockquote>
+<p>####c.函数命名</p>
+<blockquote>
+<p>避免使用含糊的词 如：HandleOutput-&gt;FormatAndPrint</p>
+<p>找不到准确的词说明子程序可能需要修改</p>
+<p>描述程序做的所有事 ：一个动宾结构，object.function()则不必<br>   或者描述程序的返回值</p>
+<p>一个恰如其份但是糟糕的函数名说明需要重新设计</p>
+</blockquote>
+<p>#######子程序长度一般应少于200行</p>
+<p>####d.参数</p>
+<blockquote>
+<p>1.接口参数按一定顺序排列，如：修改-输入-输出型参数<br>        考虑命名规则<br>   2.使用自己函数定义的工作变量,如:<br>  <code>int  workingVal=inputVal
+ workingVal.......
+//注意这两个变量命名是很差的</code><br>3.尽量采用const关键字<br>4.以断言或注释解释参数的操作类型数值范围等<br>5.参数过多说明耦合紧密。人脑很难记住超过7个单词<br>7.确保形参实参一致<br>8.传递数据成员还是对象：<br>–取决于抽象</p>
+</blockquote>
+<p>######函数不要返回局部变量 </p>
+<p>####e.宏程序</p>
+<blockquote>
+<p>1.参数要套括号==<br>2.整个表达式外要套括号<br>3.多条语句外套{}<br>4.除非必要，还是不要用了吧…</p>
+</blockquote>
+<hr>
+<p>#第六部分：变量</p>
+<p>代码被阅读的时间远远大于编写的时间，确保代码阅读方便。</p>
+<p>##一般事项<br>1.显式声明，初始化<br>2.就近声明和初始化<br>3.让变量的跨度和存活时间尽可能短以减少攻击窗口。（尽量不使用全局变量)<br> 把相关的语句放在一起<br>提取语句成为单独的子程序<br>4.抛弃变量时赋不合理的NULL值<br>5.变量晚绑定值可以获得灵活性（使用具名变量）<br>6.单个变量只用于单一用途<br>7.检查是否有未使用的已声明变量</p>
+<p>##变量命名<br>1.8到16个字符<br>2.体现问题而非解决方案<br>3.一致的命名变量。<br>如revenueTotal—expenseAverage<br>例外numCustomers<br>4.采用对仗词如old-new，source-target<br>5.用比i，j，k更具意义的词为大循环或多重循环的循环变量命名<br>6.temp说明程序员并没有完全的搞懂问题。<br>7.done，found,error等布尔变量。<br>8.枚举类型使用组前缀。</p>
+<blockquote>
+<p>######一.命名规则<br>1.命名规则为代码增加了结构，是一项全局决策。<br>2.用g_标识全局变量<br>3.变量首字母小写，函数首字母大写。</p>
+</blockquote>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/tmux使用/" itemprop="url">
+                高效开发环境mac篇
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T13:15:15+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>一个高效的开发环境需要具备以下几点：<br>    1.快速的程序切换<br>     2.高效的编辑工具<br>窗口与程序管理工具：tmux/iterm2/zsh/alfred<br>代码阅读工具：vim／ctags／taglist<br><a href="http://mindonmind.github.io/notes/linux/tmux.html" target="_blank" rel="external">tmux使用</a></p>
+<h3 id="1-_会话">1. 会话</h3><p>列出所有会话：prefix s<br>进入新会话：tmux new-session -s session_name<br>退出会话： prefix d<br>重新进入旧会话：tmux attach session_name<br>删除会话：tmux kill-session -t session-name<br>重命名会话：tmux rename-session new-name</p>
+<h3 id="2-_窗口">2. 窗口</h3><p>列出所有窗口 prefix w<br>选择窗口 prefix num<br>新建窗口 prefix c<br>重命名窗口 prefix ,<br>删除窗口 prefix &amp;</p>
+<h3 id="3-_面板">3. 面板</h3><p>增加竖面板 prefix %<br>增加横面板 prefix “<br>删除面板 prefix x<br>面板提升为窗口 prefix ！</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/redis源码学习之dynamic string/" itemprop="url">
+                redis源码学习之dynamic string
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T13:15:15+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p><a href="http://redisbook.readthedocs.org/en/latest/internal-datastruct/sds.html" target="_blank" rel="external">redis设计与实现-简单动态字符串</a></p>
+<h3 id="1-_背景">1. 背景</h3><p>c中string查询字符串长度代价为O（n），append字符需重新分配内存</p>
+<p>redis中存在大量查询长度，append字符操作</p>
+<h3 id="2-_目的">2. 目的</h3><p>构造redis内部新的string类型</p>
+<p>以O（1）复杂度查询字符串长度</p>
+<p>append分配内存进行优化</p>
+<h3 id="3-实现方式">3.实现方式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> * sds;</span><br><span class="line"><span class="keyword">struct</span> sdshdr&#123;</span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init,size_t initlen)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh;</span><br><span class="line">    sh = zmalloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+initlen+<span class="number">1</span>);</span><br><span class="line">    sh-&gt;len=initlen;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(sh-&gt;buf,init,initlen);</span><br><span class="line">    <span class="keyword">return</span>  (<span class="keyword">char</span>*) sh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> size_t <span class="title">sdavail</span><span class="params">(<span class="keyword">const</span> sds s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh=(<span class="keyword">void</span> *)(s - (<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)))</span><br><span class="line">    <span class="keyword">return</span> sh-&gt;<span class="built_in">free</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*enlarge space（double what we need）</span><br><span class="line"> *note:this does not change the length of sds string</span><br><span class="line"> */</span></span><br><span class="line"><span class="function">sds <span class="title">sdsMakeRoomFor</span><span class="params">(sds s,size_T addlen)</span></span>&#123;</span><br><span class="line">    strucrt sdshdr *sh,*newsh;</span><br><span class="line">    <span class="keyword">size_t</span> <span class="built_in">free</span>=sdavail(s);</span><br><span class="line">    <span class="keyword">size_t</span> len=sdslen(s);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">free</span>&gt;=addlen)</span><br><span class="line">        <span class="keyword">return</span> s;</span><br><span class="line">    newlen=len+addlen;</span><br><span class="line">    <span class="keyword">if</span>(newlen&lt;SDS_MAX_PREALLOC)</span><br><span class="line">        newlen *=<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        newlen=SDS_MAX_PREALLOC;</span><br><span class="line">    newsh=zrealloc(sh,<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+newlen+<span class="number">1</span>);</span><br><span class="line">    newsh-&gt;len=len;</span><br><span class="line">    newsh-&gt;<span class="built_in">free</span>=newlen-len;</span><br><span class="line">    <span class="keyword">return</span> newsh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//copy count len bytes of string pointed by pointer t to sds s</span></span><br><span class="line"><span class="function">sds <span class="title">sdscpylen</span><span class="params">(sds s,<span class="keyword">const</span> <span class="keyword">char</span> *t,size_t len)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshrd *sh=(<span class="keyword">void</span> *) (s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshrdr)));</span><br><span class="line">    <span class="keyword">size_t</span> totlen=sh-&gt;<span class="built_in">free</span> + sh-&gt;len;</span><br><span class="line">    <span class="keyword">if</span>(totlen &lt; len)&#123;</span><br><span class="line">        s=sdsMakeRoomFor(s,len-sh-&gt;len);</span><br><span class="line">        sh=(<span class="keyword">void</span> *)(s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)));</span><br><span class="line">        totlen=sh-&gt;<span class="built_in">free</span>+sh-&gt;len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">memcpy</span>(s,t,len);</span><br><span class="line">    sh-&gt;len=len;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=totlen=len;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-_感想">4. 感想</h3><ul>
+<li>深入了解调查业务需求。设计恰到好处的元数据结构以改善性能/改善代码结构</li>
+</ul>
+<hr>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/linux之IO模式/" itemprop="url">
+                linux之IO模式
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T13:15:15+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p><a href="http://segmentfault.com/a/1190000003063859" target="_blank" rel="external">Linux IO 模式</a></p>
+<h3 id="1-_背景：">1. 背景：</h3><p>IO 消耗大量时间。进程需要等待IO。<br>IO 过程分为2步：</p>
+<blockquote>
+<p>准备数据<br>内核空间（内核内存块）写入用户空间（进程内存块）</p>
+</blockquote>
+<p>进程等待IO时，自发进入阻塞状态，不占cpu。</p>
+<h3 id="2-_IO_分类">2. IO 分类</h3><p>根据内核是否直接返回响应</p>
+<p>####1. 阻塞IO<br> 在io过程的两步中内核均不返回消息。kernel完成第二步后返回结果。</p>
+<p><img src="http://segmentfault.com/img/bVm1c3" alt="阻塞io"></p>
+<p>####2. 非阻塞IO:</p>
+<p> 在io过程中的第一步不断试图read数据（轮询kernel）。面对每次read，kernel直接响应结果（是否准备好）。<br><img src="http://segmentfault.com/img/bVm1c4" alt="非阻塞io"></p>
+<p>####3. IO多路复用：<br>进程调用select/poll/epoll.阻塞。系统监视所有select的socket，当数据准备好时返回响应，唤醒进程。这样一个进程可以等待多个文件描述符。</p>
+<p> <img src="http://segmentfault.com/img/bVm1c5" alt="IO多路复用"></p>
+<p>####4.异步IO</p>
+<p>以上都是同步IO(进程在存在挂起过程).异步IO如下图</p>
+<p><img src="http://segmentfault.com/img/bVm1c8" alt="此处输入图片的描述"></p>
+<hr>
+<h2 id="结论：">结论：</h2><p>各模式IO对比如下图所示</p>
+<p><img src="http://segmentfault.com/img/bVm1c9" alt="各IO模式对比"></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/hello-world/" itemprop="url">
+                Hello World
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T13:15:15+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick_Start">Quick Start</h2><h3 id="Create_a_new_post">Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run_server">Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate_static_files">Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy_to_remote_sites">Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+<p>More info: <a href="http://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+  </section>
+
+  
+ </div>
+
+        
+
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="wenduo" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wenduo</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">7</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">4</span>
+              <span class="site-state-item-name">標籤</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenduo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
