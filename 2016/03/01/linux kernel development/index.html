@@ -1,0 +1,693 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+
+
+  <meta name="keywords" content="linux-kernel," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description" content="##一. 简介
+1.1 什么是操作系统内核操作系统内核概念比较宽泛。一般来讲，操作系统内核包含
+
+调度：cpu内存，内存
+系统服务:网络，进程通信， 中断处理等
+io栈
+
+系统内核程序一般运行在受保护的内存空间，此时的系统状态与内存空间称为内核态。app通过调用系统函数，进入内核态。同时，内核处理来自硬件或程序的中断.为了快速响应中断，除了在进程上下文之外系统还定义了中断上下文。
+
+所以所有的cp">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux-kernel-development">
+<meta property="og:url" content="http://yoursite.com/blog/2016/03/01/linux kernel development/index.html">
+<meta property="og:site_name" content="wenduo blog">
+<meta property="og:description" content="##一. 简介
+1.1 什么是操作系统内核操作系统内核概念比较宽泛。一般来讲，操作系统内核包含
+
+调度：cpu内存，内存
+系统服务:网络，进程通信， 中断处理等
+io栈
+
+系统内核程序一般运行在受保护的内存空间，此时的系统状态与内存空间称为内核态。app通过调用系统函数，进入内核态。同时，内核处理来自硬件或程序的中断.为了快速响应中断，除了在进程上下文之外系统还定义了中断上下文。
+
+所以所有的cp">
+<meta property="og:image" content="http://static.zybuluo.com/wenduo/me7d0nv7xo5miz6g7twz5dgt/Linux_Kernel_Development_3rd_Edition_-_Love_-_2010_pdf__33_%E4%B9%8B_467_%E9%A1%B5_.png">
+<meta property="og:image" content="http://static.zybuluo.com/wenduo/2nujiwof0xl4gqbus03cqxs7/Linux_Kernel_Development_3rd_Edition_pdf__322_%E4%B9%8B_467_%E9%A1%B5_.png">
+<meta property="og:updated_time" content="2016-08-16T14:30:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux-kernel-development">
+<meta name="twitter:description" content="##一. 简介
+1.1 什么是操作系统内核操作系统内核概念比较宽泛。一般来讲，操作系统内核包含
+
+调度：cpu内存，内存
+系统服务:网络，进程通信， 中断处理等
+io栈
+
+系统内核程序一般运行在受保护的内存空间，此时的系统状态与内存空间称为内核态。app通过调用系统函数，进入内核态。同时，内核处理来自硬件或程序的中断.为了快速响应中断，除了在进程上下文之外系统还定义了中断上下文。
+
+所以所有的cp">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> linux-kernel-development | wenduo blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">wenduo blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            歸檔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            標籤
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              linux-kernel-development
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-03-01T15:30:16+08:00" content="2016-03-01">
+            2016-03-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>##一. 简介</p>
+<h3 id="1-1_什么是操作系统内核">1.1 什么是操作系统内核</h3><p>操作系统内核概念比较宽泛。一般来讲，操作系统内核包含</p>
+<ul>
+<li>调度：cpu内存，内存</li>
+<li>系统服务:网络，进程通信， 中断处理等</li>
+<li>io栈</li>
+</ul>
+<p>系统内核程序一般运行在受保护的内存空间，此时的系统状态与内存空间称为内核态。app通过调用系统函数，进入内核态。同时，内核处理来自硬件或程序的中断.为了快速响应中断，除了在进程上下文之外系统还定义了中断上下文。</p>
+<p><img src="http://static.zybuluo.com/wenduo/me7d0nv7xo5miz6g7twz5dgt/Linux_Kernel_Development_3rd_Edition_-_Love_-_2010_pdf__33_%E4%B9%8B_467_%E9%A1%B5_.png" alt="内核态"></p>
+<p>所以所有的cpu内核，只在三种状态切换：user-space, kernel-space, interupt-context。(idle实际上是一个最低优先级的内核程序，运行cpu指令hlt，暂停并等待硬件中断)</p>
+<p>根据内核态的不同，操作系统一般有两种设计思路： <strong>monolithic kernel 和 microkernel</strong>。</p>
+<ul>
+<li>在monokernel 设计中整个内核运行于单进程,共享一地址空间。函数间相互调用很方便。unix大多采用这种设计</li>
+<li>microkernel将内核功能分为多部分并在不同进程下运行.这种设计很优美很学院，缺点是函数调用需要通过ipc。</li>
+</ul>
+<p>unix和linux都是monolithic kernel</p>
+<h3 id="1-2_linux和unix的区别">1.2 linux和unix的区别</h3><p>linux从unix而来，linux和最原始的unix相比，拥有下列特性（就像一些商业化unix系统一样）</p>
+<ul>
+<li>smp</li>
+<li>preemptive task</li>
+<li>可以根据需求动态加载某些内核模块（比monothilc更加模块化）</li>
+</ul>
+<p>##十三. vfs</p>
+<h3 id="13-1_抽象文件系统">13.1 抽象文件系统</h3><p>vfs规定出文件系统的一系列操作,我们定义出这些操作也就算是写了一套文件系统。<br>一次user_space的write(fd,buf,len)，实际上调用vfs层的sys_write，而后vfs调用各文件系统对应的write方法，而写入device。看起来像是一个接口。</p>
+<h3 id="13-2_vfs的元素">13.2 vfs的元素</h3><ol>
+<li><p>filesystem：是一个树结构,对应操作为创建，删除，mount等，其元信息记录在superblock中</p>
+</li>
+<li><p>file:file单纯的记录数据，其元信息保存在index node中</p>
+</li>
+<li><p>inode：一个文件对应一个inode，包含文件的物理存储信息，比如这个文件对应哪些block等。操作系统打开文件实际上分两步：找到文件名对应inode，读取inode对应block</p>
+</li>
+</ol>
+<ul>
+<li>硬链接：两个文件名指向同一个inode叫做硬链接，当该inode被链接计数为0是即删除其对应的数据。</li>
+<li>软链接：一个文件名指向另外一个文件的文件名，这样当该文件被删除时，链接也失效</li>
+<li>在线更新文件：操作系统打开文件后只感知inode而不感知文件名。可以用指向另外一个inode的同名文件名替换该文件名(而不改变运行时程序持有的inode)，当程序下次读取该文件时即更改了配置。</li>
+</ul>
+<ol>
+<li>dentry:<br>即directory-entry。一个inode可能对应多个dentry，主要包含文件名，上下级路径等组织信息，用于回溯路径等。dentry节点构成了一个树状结构。<br>dentry有三种状态</li>
+</ol>
+<ul>
+<li>used: 与inode关联，且正在被vfs使用</li>
+<li>unused: 与inode绑定但未被vfs使用，且未被vfs使用</li>
+<li>negative:未与inode绑定，没</li>
+</ul>
+<p>那么访问一次文件需要:依次读路径中的dentry，而后读inode信息,而后读对应磁盘。所有的dentry都保存在内存中，如没有则访问文件时需要新创建</p>
+<p>##十四. Block IO</p>
+<h3 id="块设备">块设备</h3><p>设备一般分为两种</p>
+<ul>
+<li>block device：支持随机访问，对程序性能要求高</li>
+<li>chararctor device：只支持以流的方式访问</li>
+</ul>
+<h3 id="14-1_块设备基本特征">14.1 块设备基本特征</h3><p> 物理上，访问块设备的基本单元是sector，各个设备不同，一般为512byte。而block则是对文件系统的抽象，包含若干个sector,但应小于page size。一般为500byte，1k或4k，一般叫sector为 device block，block为 IO block</p>
+<h3 id="14-2_buffer_page与_IO_block">14.2 buffer page与 IO block</h3><ul>
+<li>buffer 是IO block在内存中的映射。一个buffer对应硬盘上一个IOblock.一个buffer的整体信息存储在buffer head中。而内存中一个page可能包含多块block，也即多个buffer。</li>
+<li>buffer是block在内存中的映射。内核中通过<em>buffer_head</em>记录physical block到page的映射。</li>
+</ul>
+<h3 id="14-3_bio">14.3 bio</h3><ul>
+<li>由于buffer_head结构体比较大，系统又多以page为单元操作。在写入page对应多个buffer，很不方便，同时在写入大块数据时需要多个buffer造成额外空间开销。因此出现了page cache解决page到block问题(16章)，bio解决大块数据读写问题。</li>
+<li>一个bio operation在内核中通过bio_structure表示，bio_structure是一个数组，成员是buffer所在的page及offset.这样可以一次操作多个buffer也即下面的block，而无需讲一次io拆分成多个block。<br><img src="http://static.zybuluo.com/wenduo/2nujiwof0xl4gqbus03cqxs7/Linux_Kernel_Development_3rd_Edition_pdf__322_%E4%B9%8B_467_%E9%A1%B5_.png" alt="Linux_Kernel_Development_3rd_Edition_pdf__322_之_467_页_.png-312.4kB"><h3 id="14-1_request_queue与_IO_scheduler">14.1 request queue与 IO scheduler</h3></li>
+<li>一个block device 从它对应的 request queue 中取 request(包含多个bio)。request queue中的request 写自上层的文件系统。</li>
+<li>IO sheduler 负责merge and sort request queue，目的是通过减少磁盘 seek 来提高整体output<br>merge指将两次io合并为一个，sort指通过request的sector排序，使得磁头只需要按一个方向依次寻道。因此又叫电梯调度算法。</li>
+</ul>
+<p>##十五 page cache<br>一般讲cache，对应backing store,指被cache的东西，如disk.<br>hit指读到cache住的东西，表明cache的有效性</p>
+<p>###15.1 page cache<br>page cache一般有三种写策略：</p>
+<ul>
+<li>no write :直接写磁盘，invalidate page cache,cache不住write，同时代价高</li>
+<li>write through：写磁盘同时写page cache，实现简单，cache与backing store一致</li>
+<li>write back(write behind):只写page cache，标记page cache为脏，并加入dirty list，后台有一个写回进程定期往disk写，写后重新标记page cache为不脏，这么做可以进行写操作合并，同时下次可以进行merge and sort，性能一般比较好，但实现较复杂。</li>
+</ul>
+<p>###15.2 linux page cache<br>linux采用lru管理page cache。<br>每次读写，都会从cache里查找相应的page是否在cache中。这需要极高的效率</p>
+<ul>
+<li><p>一般的lru实现</p>
+<blockquote>
+<p>维护一个双向链表和hash表。每次reference，在hash表中查找该key对应的node。无则将node加入链表头部和hashtable中。如果找到这个node，则将其移到双向链表头部(仍是o(1)复杂度)。stl::map + stl::list很容易完成</p>
+</blockquote>
+</li>
+<li><p>linux2.6之前，hashtable</p>
+<blockquote>
+<p>很简单。整个系统维护一个hashtable，每次hash结果返回一个双向链表，包含所有hash到相同值的page。每次reference，在hashtable中取得双向链表后遍历。<br>这么做的缺点是：<br>1.全局一把锁锁住超级大的hash-table，性能差空间占用大<br>2.cache miss时效率很差，需要遍历完整个双向链表</p>
+</blockquote>
+</li>
+<li><p>linux2.6之后 radix tree</p>
+<blockquote>
+<p>radix tree </p>
+</blockquote>
+</li>
+</ul>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/linux-kernel/" rel="tag">#linux-kernel</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/03/01/网络与socket/" rel="prev">网络与socket</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/01/posix thread/" rel="next">posix thread</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="wenduo" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wenduo</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">標籤</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1_什么是操作系统内核"><span class="nav-number">1.</span> <span class="nav-text">1.1 什么是操作系统内核</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2_linux和unix的区别"><span class="nav-number">2.</span> <span class="nav-text">1.2 linux和unix的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-1_抽象文件系统"><span class="nav-number">3.</span> <span class="nav-text">13.1 抽象文件系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-2_vfs的元素"><span class="nav-number">4.</span> <span class="nav-text">13.2 vfs的元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#块设备"><span class="nav-number">5.</span> <span class="nav-text">块设备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-1_块设备基本特征"><span class="nav-number">6.</span> <span class="nav-text">14.1 块设备基本特征</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-2_buffer_page与_IO_block"><span class="nav-number">7.</span> <span class="nav-text">14.2 buffer page与 IO block</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-3_bio"><span class="nav-number">8.</span> <span class="nav-text">14.3 bio</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-1_request_queue与_IO_scheduler"><span class="nav-number">9.</span> <span class="nav-text">14.1 request queue与 IO scheduler</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenduo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

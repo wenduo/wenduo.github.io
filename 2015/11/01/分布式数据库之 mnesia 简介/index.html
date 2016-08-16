@@ -1,0 +1,831 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+
+
+  <meta name="keywords" content="分布式存储," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description" content="0. 序Mneisa 是erlang/otp 中内置的分布式数据库系统，支持对erlang原生数据的操作。在rabbitmq，ejabbered中被使用。bada使用其作为元信息管理模块。本文将按如下顺序介绍mnesia。
+
+
+mnesia基本特性与使用
+mnesia系统中各组件及其启动过程
+mnesia的数据存储
+mnesia中的锁
+mnesia中的事务实现
+mnesia的二次启动过程
+mnes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式数据库mnesia基本介绍">
+<meta property="og:url" content="http://yoursite.com/blog/2015/11/01/分布式数据库之 mnesia 简介/index.html">
+<meta property="og:site_name" content="wenduo blog">
+<meta property="og:description" content="0. 序Mneisa 是erlang/otp 中内置的分布式数据库系统，支持对erlang原生数据的操作。在rabbitmq，ejabbered中被使用。bada使用其作为元信息管理模块。本文将按如下顺序介绍mnesia。
+
+
+mnesia基本特性与使用
+mnesia系统中各组件及其启动过程
+mnesia的数据存储
+mnesia中的锁
+mnesia中的事务实现
+mnesia的二次启动过程
+mnes">
+<meta property="og:updated_time" content="2016-08-16T14:30:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="分布式数据库mnesia基本介绍">
+<meta name="twitter:description" content="0. 序Mneisa 是erlang/otp 中内置的分布式数据库系统，支持对erlang原生数据的操作。在rabbitmq，ejabbered中被使用。bada使用其作为元信息管理模块。本文将按如下顺序介绍mnesia。
+
+
+mnesia基本特性与使用
+mnesia系统中各组件及其启动过程
+mnesia的数据存储
+mnesia中的锁
+mnesia中的事务实现
+mnesia的二次启动过程
+mnes">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> 分布式数据库mnesia基本介绍 | wenduo blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">wenduo blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            歸檔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            標籤
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              分布式数据库mnesia基本介绍
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-11-01T15:30:16+08:00" content="2015-11-01">
+            2015-11-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="0-_序">0. 序</h2><p><strong>Mneisa</strong> 是<strong>erlang/otp</strong> 中内置的分布式数据库系统，支持对erlang原生数据的操作。在rabbitmq，ejabbered中被使用。bada使用其作为元信息管理模块。本文将按如下顺序介绍mnesia。</p>
+<blockquote>
+<ul>
+<li>mnesia基本特性与使用</li>
+<li>mnesia系统中各组件及其启动过程</li>
+<li>mnesia的数据存储</li>
+<li>mnesia中的锁</li>
+<li>mnesia中的事务实现</li>
+<li>mnesia的二次启动过程</li>
+<li>mnesia网络分区处理</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="1-_mnesia基本特性及使用">1. mnesia基本特性及使用</h2><p> mnesia为了通信应用而设计，其特点有：</p>
+<blockquote>
+<p>灵活配置各表存储位置，存储种类<br>运行时修改元信息<br>支持多种事务操作<br>单节点挂掉后不影响整个集群使用</p>
+</blockquote>
+<h4 id="1-1_建立数据库">1.1  建立数据库</h4><p>mnesia中的数据表分为元信息表schema table及数据表 data table。schema表保存集群信息及各表的元信息，包括集群各节点，各表的存储位置，存储方式等。所以在mnesia初次启动前，我们要建立元表。<br><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create_schema<span class="function"><span class="params">(DiscNodes)</span> -&gt;</span> ok | &#123;error,Reason&#125;</span><br></pre></td></tr></table></figure></p>
+<p>建立元信息表后，即可启动mnesia，以bada中mnesia的使用为例,seed节点首次建立数据库及数据表的代码实例如下：<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mnesia:create_schema([node()]),</span><br><span class="line">mnesia:start(),</span><br><span class="line">mnesia:create_table(node, [<span class="tuple">&#123;disc_copies, [<span class="function_name">node</span>()]&#125;</span>, <span class="tuple">&#123;type, set&#125;</span>, <span class="tuple">&#123;majority, true&#125;</span>]),</span><br></pre></td></tr></table></figure></p>
+<p>creata_table即创建数据表操作。几个主要属性解释如下：</p>
+<blockquote>
+<ol>
+<li><p>{disc_copies, Nodelist}:<br>   mnesia中的表可以按照3种方式进行存储：ram,disc_copy,disc_only<br>   disc_copies在内存磁盘中均有一份表。该属性配置哪些节点以disc_copy 方式存储数据表。</p>
+</li>
+<li><p>{majority，true}：<br>   如果设置表的majority属性为true，当对表中加写锁或进行事务操作时，如节点不在majority集合，则直接abort。</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="1-2_更改表结构状态">1.2 更改表结构状态</h4><p>mnesia支持元信息的运行时修改，如<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//通知系统添加新节点</span><br><span class="line">mnesia:change_config(extra_db_nodes, <span class="variable">Hostnode</span>),</span><br><span class="line">//本地节点以disc_copy方式存储schema信息</span><br><span class="line"> mnesia:change_table_copy_type(schema, node(), disc_copies),</span><br><span class="line">//给replicaset表添加disc_copie节点</span><br><span class="line">mnesia:add_table_copy(replicaset, <span class="variable">Node</span>, disc_copies),</span><br></pre></td></tr></table></figure></p>
+<p>我们将在后续介绍这个几个函数的逻辑流程</p>
+<h3 id="1-3_读写">1.3 读写</h3><p>mnesia中操作可以选择多种协议：</p>
+<blockquote>
+<p>dirty_write()   :无事务无锁写，直接将commit结果发生到参与节点<br> non_transaction(Fun):无事务，Fun中的锁正常加<br>  transaction(Fun)：正常事务</p>
+</blockquote>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mnesia:dirty_read(<span class="variable">Tab</span>,<span class="variable">Key</span>).</span><br><span class="line"><span class="function"><span class="title">dirty_write</span><span class="params">(<span class="tuple">&#123;<span class="variable">Tab</span>,<span class="variable">Key</span>,<span class="variable">Val</span>&#125;</span>)</span>.</span><br><span class="line"></span><br><span class="line">F<span class="title">un</span>=<span class="title">fun</span><span class="params">()</span> -&gt;</span> <span class="function_name">write</span>(<span class="tuple">&#123;<span class="variable">Tab</span>,<span class="variable">Key</span>,<span class="variable">Val</span>&#125;</span>), </span><br><span class="line"><span class="function_name">mnesia:transaction</span>(<span class="variable">Fun</span>).</span><br></pre></td></tr></table></figure>
+<h2 id="2-_mnesia系统中各组件及其启动过程">2. mnesia系统中各组件及其启动过程</h2><h3 id="2-1_各组件对应文件及作用">2.1 各组件对应文件及作用</h3><table>
+<thead>
+<tr>
+<th>各组件</th>
+<th style="text-align:right">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mnesia</td>
+<td style="text-align:right">公共接口</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_controller</td>
+<td style="text-align:right">负责表的加载过程决策</td>
+<td>gen_server</td>
+</tr>
+<tr>
+<td>mnesia_recover</td>
+<td style="text-align:right">记录事务</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_monitor</td>
+<td style="text-align:right">监控其他节点</td>
+<td>gen_server</td>
+</tr>
+<tr>
+<td>mnesia_schema</td>
+<td style="text-align:right">元信息事务</td>
+<td>gen_server</td>
+</tr>
+<tr>
+<td>mnesia_load_table</td>
+<td style="text-align:right">加载表</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_late_load_table</td>
+<td style="text-align:right">强制/孤儿节点加载表</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_recover</td>
+<td style="text-align:right">事务恢复</td>
+</tr>
+<tr>
+<td>mnesia_dumper</td>
+<td style="text-align:right">将log转存</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_tm</td>
+<td style="text-align:right">事务管理</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_log</td>
+<td style="text-align:right">日志</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_locker</td>
+<td style="text-align:right">锁管理</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_dumper</td>
+<td style="text-align:right">日志转存入数据表</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_subscr</td>
+<td style="text-align:right">订阅消息</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_event</td>
+<td style="text-align:right">事件处理</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_sp</td>
+<td style="text-align:right">产生进程报告</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_frag</td>
+<td style="text-align:right">大表分片存储</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_frag_hash</td>
+<td style="text-align:right">大表分片存储</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_lib</td>
+<td style="text-align:right">公用的库函数</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_index</td>
+<td style="text-align:right">索引</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_checkpoint</td>
+<td style="text-align:right">检查点</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_bup</td>
+<td style="text-align:right">备份</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_backup</td>
+<td style="text-align:right">备份所需回调函数的一个实现，可被替换</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-2_启动过程">2.2 启动过程</h3><p>mnesia是一个OTP应用,启动过程和其他OTP应用一致<br>1.Kernel - application controler - start mnesia_sup<br>2.Mnesia_sup是一个supervisor<br>监控并按顺序启动如下进程<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tuple">&#123;<span class="variable">Mnesia_sup</span>,start_event&#125;</span> -&gt;</span><br><span class="line">                        mnesia_kernel_sup</span><br><span class="line">                        gen_event:start<span class="tuple">&#123;mnesia_event&#125;</span>,    </span><br><span class="line">                        <span class="variable">Handler</span> = mnesia_monitor:get_env(event_module),</span><br><span class="line">                        gen_event:add_handler(mnesia_event, <span class="variable">Handler</span>, []),</span><br><span class="line"><span class="tuple">&#123;mnesia_kernel_sup,start&#125;</span>-&gt;</span><br><span class="line">						mnesia_monitor</span><br><span class="line">						mnesia_subscr</span><br><span class="line">						mnesia_locker,</span><br><span class="line">						mnesia_recover,</span><br><span class="line">						mnesia_tm,</span><br><span class="line">						mnesia_checkpoint_sup,</span><br><span class="line">						mnesia_snmp_sup</span><br><span class="line">						mnesia_controller</span><br><span class="line">						mnesia_late_loader</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-1_mnesia_monitor的启动">2.1 mnesia_monitor的启动</h4><p>monitor负责mnesia中程序运行监控及运行时数据管理。其启动过程主要做3件事：<br>a. 监控网络状态<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net_kernel:monitor_nodes(<span class="literal">true</span>)</span><br></pre></td></tr></table></figure></p>
+<p>b. 创建两张ets表保存程序数据 :<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?ets_new_table(mnesia_gvar, [set, public, named_table]),</span><br><span class="line">?ets_new_table(mnesia_stats, [set, public, named_table]),</span><br></pre></td></tr></table></figure></p>
+<p> mnesia_gvar 储存系统状态信息，各数据表信息等，用于系统运行时状态判断，数据表元信息查询等,使用方式为:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  ets:insert( mnesia_gvar, <span class="tuple">&#123; <span class="tuple">&#123;table,storage_type&#125;</span>, disc_copied &#125;</span> );</span><br><span class="line">  ets:lookup_element( mnesia_gvar, <span class="tuple">&#123;table, storage_type&#125;</span>, <span class="number">2</span>)</span><br><span class="line">```        </span><br><span class="line">mnesia_stats 储存统计信息.</span><br><span class="line">c. 初始化进程字典各变量，如</span><br><span class="line">```erlang</span><br><span class="line"><span class="function"><span class="title">set</span><span class="params">(pending_checkpoints, [])</span>,</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="2-2_mnesia_tm_的启动">2.2 mnesia_tm 的启动</h4><p>mnesia_tm的mnesia的事务管理器。负责事务决议提交恢复等。是mnesia的核心组件。其启动过程分为：</p>
+<blockquote>
+<ol>
+<li>启动mnesia_schema 加载元表</li>
+<li>初始化mnesia_recover，加载过往decision信息</li>
+<li>与其他节点联通</li>
+<li>根据过往decision表及其他节点log信息进行事务恢复</li>
+</ol>
+</blockquote>
+<h4 id="2-3_mnesia_schema_的启动">2.3 mnesia_schema 的启动</h4><p>mnesia_tm和及mnesia_recover的初始化保证了mnesia启动后数据的一致性，我们将在mnesia二次启动部分介绍其恢复机制。mnesia_schema 在mnesia_tm启动过程中被调用，<br>1.从dat表中加载元数据到ets表schema中，以供运行时更改<br>2.从ets表schema中加载各表信息到mnesia_gvar表中以供程序查询<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">Cs</span> = ets_lookup(schema, <span class="variable">Tab</span>, <span class="number">3</span>).</span><br><span class="line"><span class="function"><span class="title">do_set_schema</span><span class="params">(<span class="variable">Tab</span>, <span class="variable">Cs</span>)</span>.</span></span><br></pre></td></tr></table></figure></p>
+<p>schema中数据实际是一个 {schema, TabName, cstuct}数组。cstruct在mnesia.hrl中定义，包含一个表的各项元信息，在create_table中传人的各项参数即为之赋值所用。<br>3.更新各表运行时信息，如where_to_read/write等。该字段保持可用于读或写的活动副本，供程序查询</p>
+<h2 id="3-_数据存储">3. 数据存储</h2><h4 id="3-1_基本文件管理:ets/dets_与disc_log">3.1  基本文件管理:ets/dets 与disc_log</h4><p>mnesia使用ets/dets/disc_log 进行数据管理<br>ets储存在内存中，ets中的table实际上就是一个tuple对的列表，基本操作为增删查改遍历等<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ets:insert(table,<span class="tuple">&#123;key,value&#125;</span>),</span><br><span class="line">ets:look_up(table,key),</span><br><span class="line">ets:look_up_element(table,key,pos),</span><br><span class="line">ets:first(table),</span><br><span class="line">ets:next(table,key1),</span><br></pre></td></tr></table></figure></p>
+<p>dets与ets类似，保存于磁盘中。<br>disc_log文件支持顺序写,chunk读。</p>
+<h4 id="3-2_数据存储">3.2 数据存储</h4><p>mnesia中表有三种存储方式：ram，disc_copy，disc_only。ram以ets存于内存。disc_copy表在内存以ets存储，在磁盘以disc_log形式持久化。以disc_copy表的读写为例，不考虑事务及锁时，一次read即读一次ets表。一次写则进行一次ets写，及一次日志顺序写。日志写满100条或间隔一段时间后进行dump。</p>
+<h4 id="3-3_一次写过程">3.3 一次写过程</h4><blockquote>
+<ol>
+<li>写入ets </li>
+<li>写入latest log。每个一段时间或写满100条会触犯dump</li>
+<li>dump过程中，检测dcd与dcl文件之比。若dcl较小，则将log整理入dcl.否则直接将ets dump到dcd文件中</li>
+</ol>
+</blockquote>
+<h2 id="4-mnesia中的锁">4.mnesia中的锁</h2><ol>
+<li>锁的种类<br>mnesia中有几种锁，读锁，写锁，读表锁，写表锁，粘滞锁。<br>粘滞锁是从效率角度考虑效率之前事务保存下来以便复用的锁。<br>读锁共享，写锁排他。</li>
+<li>wait-die机制：</li>
+</ol>
+<blockquote>
+<p>1.当A,B事务分别持有a,b项的锁，分别给对方加锁时，会产生死锁。<br>2.写排他，读共享，写锁可能会被饿死。</p>
+</blockquote>
+<p>这两类问题可以通过wait-die来解决.<br>我理解的wait-die如下:</p>
+<blockquote>
+<p>给每个事务依事务顺序递增的id。当一个项目被锁上时，另外一个锁请求根据其事务id大小决定是否进入等待队列或返回加锁失败。<br>3, lamport-clock<br>依事务顺序递增的这个id叫做lamport clock。可以保证happen-before 关系:<br>clock(a) &gt; clock(b)  –&gt; a 先于b 或ab不可比</p>
+</blockquote>
+<p>其实现方法如下</p>
+<blockquote>
+<p>a.自身counter随每次事件递增<br>b.事件A向其他节点发送消息时附带自身counter<br>c.接受消息的节点counter更新为 count(A) &lt;-  max（count(A), count(B)）</p>
+</blockquote>
+<p>4.锁释放处理<br>  加锁一般</p>
+<h2 id="5-mnesia中的事务">5.mnesia中的事务</h2><p>无分区 通过事务保证强一致<br>有分区 通过重启时恢复保证最终一致</p>
+<p>####1.事务类型：<br>事务：通过运行时事务保证无分区时的强一致性，mnesia支持多种事务类型：</p>
+<blockquote>
+<p>无锁无事务脏写，一阶段异步；<br>有锁异步事务，一阶段同步锁，一阶段同步一阶段异步事务；<br>有锁同步事务，一阶段同步锁，两阶段同步事务；<br>有锁schema事务，一阶段同步锁，三阶段同步事务，附带schema操作的事务；</p>
+</blockquote>
+<h4 id="1-_dirty_write(_{table,_key,_value}_)">1. dirty_write( {table, key, value} )</h4><p>   跨过分区和锁，直接向各节点发出db_put请求</p>
+<h4 id="2-_异步与同步事务">2. 异步与同步事务</h4><p> mnesia事务中协调者在ask_commit阶段协将整个事务信息（参与节点，修改）发给参与者<br> 见代码</p>
+<p> 几种问题的解决:</p>
+<ol>
+<li>A,B节点的事务a，b 锁了自己后分别锁对方：因为ab事务tid不同，有一个加锁会失败。</li>
+<li>A给BC发do_commit前A就死了:B/C监控到A死，清理事务</li>
+<li>A给BC发do_commit前B就死了:B重启启动后恢复</li>
+<li>A给BC发do_commit 后A死了:B/C协议，只要有人成功即提交成功，否则abort</li>
+</ol>
+<h4 id="3-嵌套事务的实现">3.嵌套事务的实现</h4><p>mnesia支持在事务中执行事务:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">transaction1:</span><br><span class="line">      a=<span class="number">1</span></span><br><span class="line">      transaction2:a=<span class="number">2</span></span><br><span class="line">      b=<span class="number">3</span></span><br><span class="line">      </span><br><span class="line">store1: <span class="tuple">&#123;lock,a&#125;</span> a=<span class="number">1</span>;</span><br><span class="line">store2 &lt;- store1</span><br><span class="line">store2:a=<span class="number">1</span>;a=<span class="number">2</span></span><br><span class="line">store1 &lt;- store2</span><br><span class="line">store1:a=<span class="number">1</span>;a=<span class="number">2</span>;a=<span class="number">3</span></span><br><span class="line">multi_commit;</span><br></pre></td></tr></table></figure></p>
+<p>*</p>
+<h2 id="6-mnesia的恢复机制">6.mnesia的恢复机制</h2><p> 当一个节点上的mnesia再次启动时，与其他节点联络。根据自己的log和从其他节点查询到的信息进行磁盘中数据表的加载，事务恢复，合并等操作。下面将分别进行介绍</p>
+<h4 id="6-1_mnesia表加载过程">6.1 mnesia表加载过程</h4><ol>
+<li>mnesia再次启动后，节点通过比较decision_log及远程节点之记录，确定数据表的加载机制。外部用户<br>可以通过以下命令等待表正常加载完成或强制加载本地表。<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">wait_for_tables</span><span class="params">(<span class="variable">TabList</span>, <span class="variable">Timeout</span>)</span> -&gt;</span> ok | <span class="tuple">&#123;timeout, <span class="variable">BadTabList</span>&#125;</span> | <span class="tuple">&#123;error, <span class="variable">Reason</span>&#125;</span></span><br><span class="line"><span class="function_name">mnesia:force_load_table</span>([<span class="variable">Tabs</span>])</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>重启后加载表时，根据表的where_to_read查找系统中是否存在active——replica。如果存在则随机选取一个拉取，如果不存在则从本地磁盘加载。</p>
+<h4 id="6-2_备份">6.2 备份</h4><p>mnesia有备份机制<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mnesia:backup(<span class="string">"/backup.log"</span>).  </span><br><span class="line">mnesia:restore(<span class="string">"/backup.log"</span>, []).</span><br></pre></td></tr></table></figure></p>
+<p>备份的具体过程分三步<br>1、创建检查点：mnesia:activate_checkpoint/1<br>2、执行备份：mnesia:backup_checkpoint/3<br>3、停用检查点：mnesia:deactivate_checkpoint/1<br>可以把检查点理解成一个事务一致的状态</p>
+<h2 id="7-mnesia_网络分区处理">7.mnesia 网络分区处理</h2><p>mnesia调用erlang内部net_kernel作为网络模块<br>net_kernel:monitor()监控其他节点。</p>
+<h4 id="7-1_mnesia_down">7.1 mnesia_down</h4><p>当节点挂掉或断开连接时，其他节点收到net_kernel:monitor发出的mnesia_down信号，释放锁，事务等。</p>
+<h4 id="7-2_mnesia_up">7.2 mnesia_up</h4><p>当B重新加入网络，AB会收到对方的node_up消息：<br>      如A，B分别存有对方的mnesia_down日志  -&gt; 网络分区<br>此后A,B 报告网络分区，等待下一步操作.</p>
+<h4 id="7-3_网络割裂及恢复">7.3 网络割裂及恢复</h4><p>当AB网络分区超过一定时间，A/B的网络模块不在监控对方，这样当网络恢复会整个系统仍然不是连通的。将 B集群整体关闭后 重新启动可以恢复网络</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/分布式存储/" rel="tag">#分布式存储</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/12/01/linux之IO模式与c10k/" rel="prev">linux之IO模式与c10k</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/01/shell tricks/" rel="next">shell使用</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="wenduo" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wenduo</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">標籤</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#0-_序"><span class="nav-number">1.</span> <span class="nav-text">0. 序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-_mnesia基本特性及使用"><span class="nav-number">2.</span> <span class="nav-text">1. mnesia基本特性及使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1_建立数据库"><span class="nav-number">2.0.1.</span> <span class="nav-text">1.1  建立数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2_更改表结构状态"><span class="nav-number">2.0.2.</span> <span class="nav-text">1.2 更改表结构状态</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3_读写"><span class="nav-number">2.1.</span> <span class="nav-text">1.3 读写</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-_mnesia系统中各组件及其启动过程"><span class="nav-number">3.</span> <span class="nav-text">2. mnesia系统中各组件及其启动过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1_各组件对应文件及作用"><span class="nav-number">3.1.</span> <span class="nav-text">2.1 各组件对应文件及作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2_启动过程"><span class="nav-number">3.2.</span> <span class="nav-text">2.2 启动过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1_mnesia_monitor的启动"><span class="nav-number">3.2.1.</span> <span class="nav-text">2.1 mnesia_monitor的启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2_mnesia_tm_的启动"><span class="nav-number">3.2.2.</span> <span class="nav-text">2.2 mnesia_tm 的启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3_mnesia_schema_的启动"><span class="nav-number">3.2.3.</span> <span class="nav-text">2.3 mnesia_schema 的启动</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-_数据存储"><span class="nav-number">4.</span> <span class="nav-text">3. 数据存储</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1_基本文件管理:ets/dets_与disc_log"><span class="nav-number">4.0.1.</span> <span class="nav-text">3.1  基本文件管理:ets/dets 与disc_log</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2_数据存储"><span class="nav-number">4.0.2.</span> <span class="nav-text">3.2 数据存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3_一次写过程"><span class="nav-number">4.0.3.</span> <span class="nav-text">3.3 一次写过程</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-mnesia中的锁"><span class="nav-number">5.</span> <span class="nav-text">4.mnesia中的锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-mnesia中的事务"><span class="nav-number">6.</span> <span class="nav-text">5.mnesia中的事务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-_dirty_write(_{table,_key,_value}_)"><span class="nav-number">6.0.1.</span> <span class="nav-text">1. dirty_write( {table, key, value} )</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-_异步与同步事务"><span class="nav-number">6.0.2.</span> <span class="nav-text">2. 异步与同步事务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-嵌套事务的实现"><span class="nav-number">6.0.3.</span> <span class="nav-text">3.嵌套事务的实现</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-mnesia的恢复机制"><span class="nav-number">7.</span> <span class="nav-text">6.mnesia的恢复机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1_mnesia表加载过程"><span class="nav-number">7.0.1.</span> <span class="nav-text">6.1 mnesia表加载过程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2_备份"><span class="nav-number">7.0.2.</span> <span class="nav-text">6.2 备份</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-mnesia_网络分区处理"><span class="nav-number">8.</span> <span class="nav-text">7.mnesia 网络分区处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1_mnesia_down"><span class="nav-number">8.0.1.</span> <span class="nav-text">7.1 mnesia_down</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2_mnesia_up"><span class="nav-number">8.0.2.</span> <span class="nav-text">7.2 mnesia_up</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3_网络割裂及恢复"><span class="nav-number">8.0.3.</span> <span class="nav-text">7.3 网络割裂及恢复</span></a></li></ol></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenduo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,755 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+
+
+  <meta name="keywords" content="分布式存储," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description" content="一. ceph项目概述ceph是一套强一致的分布式存储系统。它主要有两个特点，
+
+
+其通过对象存储包装出块存储，posix文件存储接口。因此ceph支持对象/块/posix文件存储
+其支持client到存储端直接访问(通过crush算法)而无需代理。
+
+
+其技术栈如下图所示。
+1.1 ceph架构及几个主要流程简介ceph后端存储集群的设计思路特别主流，主要有三点：
+
+有中心节点
+
+几个monit">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ceph基本介绍">
+<meta property="og:url" content="http://yoursite.com/blog/2016/05/01/ceph 基本介绍/index.html">
+<meta property="og:site_name" content="wenduo blog">
+<meta property="og:description" content="一. ceph项目概述ceph是一套强一致的分布式存储系统。它主要有两个特点，
+
+
+其通过对象存储包装出块存储，posix文件存储接口。因此ceph支持对象/块/posix文件存储
+其支持client到存储端直接访问(通过crush算法)而无需代理。
+
+
+其技术栈如下图所示。
+1.1 ceph架构及几个主要流程简介ceph后端存储集群的设计思路特别主流，主要有三点：
+
+有中心节点
+
+几个monit">
+<meta property="og:image" content="http://static.zybuluo.com/wenduo/74kz7fdkl24xb2rmt7u0s8tx/stack.png">
+<meta property="og:updated_time" content="2016-08-16T14:30:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ceph基本介绍">
+<meta name="twitter:description" content="一. ceph项目概述ceph是一套强一致的分布式存储系统。它主要有两个特点，
+
+
+其通过对象存储包装出块存储，posix文件存储接口。因此ceph支持对象/块/posix文件存储
+其支持client到存储端直接访问(通过crush算法)而无需代理。
+
+
+其技术栈如下图所示。
+1.1 ceph架构及几个主要流程简介ceph后端存储集群的设计思路特别主流，主要有三点：
+
+有中心节点
+
+几个monit">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> ceph基本介绍 | wenduo blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">wenduo blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            歸檔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            標籤
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              ceph基本介绍
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
+            2016-05-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><h2 id="一-_ceph项目概述">一. ceph项目概述</h2><p>ceph是一套强一致的分布式存储系统。它主要有两个特点，</p>
+<blockquote>
+<ol>
+<li>其通过对象存储包装出块存储，posix文件存储接口。因此ceph支持对象/块/posix文件存储</li>
+<li>其支持client到存储端直接访问(通过crush算法)而无需代理。</li>
+</ol>
+</blockquote>
+<p>其技术栈如下图所示。<br><img src="http://static.zybuluo.com/wenduo/74kz7fdkl24xb2rmt7u0s8tx/stack.png" alt="ceph stack"></p>
+<h3 id="1-1_ceph架构及几个主要流程简介">1.1 ceph架构及几个主要流程简介</h3><p>ceph后端存储集群的设计思路特别主流，主要有三点：</p>
+<ul>
+<li><p>有中心节点</p>
+<blockquote>
+<p>几个monitor节点组成集群，通过paxos强一致的管理元信息。</p>
+</blockquote>
+</li>
+<li><p>主从结构</p>
+<blockquote>
+<p>placement是管理数据基本单元，几个placement 按一主多从组成placement group(pg)，每个pg存储多个对象，每次读写请求均打向主。从作为备份，当主挂掉后接管pg服务。ceph是强一致系统，因此每次写，主确认两个从写入成功后才返回。</p>
+</blockquote>
+</li>
+<li><p>一致性hash</p>
+<blockquote>
+<p>osd是实际存储节点，每个osd上面有多个placement。每个pg里的pg分布在不同的osd上。这样当osd数量改变后，ceph只需要对其涉及到的部分pg进行操作，迁移扩容都很方便。</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="1-2_读写流程简介">1.2 读写流程简介</h3><p>####客户端</p>
+<blockquote>
+<p>1.客户端librados 从monitor拉取最新的clustermap<br>2.客户端hash key 得到pg数<br>3.客户端根据从；clustermap和crush算法得到pg对应 osd向其发送请求</p>
+</blockquote>
+<p>####ceph集群</p>
+<blockquote>
+<ol>
+<li>主osd 收到请求，写本地同时向其他从写</li>
+<li>从分别写本地并向主返回成功</li>
+<li>主确认所有从写成功后返回成功</li>
+</ol>
+</blockquote>
+<h3 id="1-3_scrub机制简介">1.3 scrub机制简介</h3><ul>
+<li><p>scrub 检测主从中对象元信息的一致性，发现数据不一致后，可以通过ceph pg repair pg_id 修复（覆盖从）</p>
+</li>
+<li><p>deep-scrub 检测主从中对象数据一致性，默认一周一次</p>
+</li>
+</ul>
+<h3 id="1-4_数据恢复的机制简介">1.4 数据恢复的机制简介</h3><h4 id="a-_osd节点临时挂掉后，通过peering恢复数据。peering过程时间">a. osd节点临时挂掉后，通过peering恢复数据。peering过程时间</h4><p>b. 新加入osd节点,或永久删除某osd需要将pg迁移到其他osd时通过backpill 全量拷数据。<br>backfill可能将磁盘跑满，影响线上服务。限制backfill流量的参数配置：  </p>
+<blockquote>
+<p>osd-max-backfills 1<br>osd-max-recovery-threads 1<br>osd-recovery-op-priority 1<br>osd-client-op-priority 63<br>osd-recovery-max-active 1</p>
+</blockquote>
+<h3 id="1-5_heartbeat机制简介">1.5 heartbeat机制简介</h3><ul>
+<li>每个osd与与其有交叉pg的osd集合进行心跳,heartbeat失败则汇报monitor<br>心跳间隔参数: osd heartbeat interval<br>心跳超时参数: osd heartbeat grace  </li>
+</ul>
+<h2 id="二-_部署">二. 部署</h2><p>部署脚本在gitlabtest ansible项目里，ceph.yml<br>步骤：</p>
+<blockquote>
+<ol>
+<li>替换 hosts文件</li>
+<li>替换 vars/config.yml ceph部分</li>
+<li>替换 templates/ceph.conf.j2</li>
+<li>ansible-playbook ceph.yml -i hosts -kK</li>
+</ol>
+</blockquote>
+<p>集群启动后，默认路径一般是：</p>
+<blockquote>
+<p>配置文件: /etc/ceph/ceph.conf<br>log: /var/log/ceph<br>可执行文件目录 /var/lib/ceph</p>
+</blockquote>
+<h2 id="三-_常用运维指令，配置参数及资源">三. 常用运维指令，配置参数及资源</h2><h3 id="3-1_读/在线改参数">3.1 读/在线改参数</h3><p>ceph daemon osd.10 config get mon_osd_full_ratio<br>ceph tell osd.0 injectargs –debug_ms 1 </p>
+<h3 id="3-2_查看指令">3.2 查看指令</h3><ol>
+<li>查看osd</li>
+</ol>
+<ul>
+<li>查看pool配置：<br>ceph osd pool get wwd2 pg_num</li>
+<li>查看各pool大小，多少object<br>ceph osd lspools<br>rados df</li>
+<li>查看osd设置<br>ceph daemon osd.0 condfig show</li>
+<li>各osd状态<br>ceph osd dump</li>
+<li>宏观osd状态<br>ceph osd stat<br>ceph osd tree</li>
+<li>查看osdmap<br>ceph osd getmap -o osdmap<br>osdmaptool –print osdmap</li>
+<li>查看各个pool 在各个osd上的pg分布<blockquote>
+<p>ceph pg dump | awk ‘<br>/^pg_stat/ { col=1; while($col!=”up”) {col++}; col++ }<br>/^[0-9a-f]+.[0-9a-f]+/ { match($0,/^[0-9a-f]+/); pool=substr($0, RSTART, RLENGTH); poollist[pool]=0;<br>up=$col; i=0; RSTART=0; RLENGTH=0; delete osds; while(match(up,/[0-9]+/)&gt;0) { osds[++i]=substr(up,RSTART,RLENGTH); up = substr(up, RSTART+RLENGTH) }<br>for(i in osds) {array[osds[i],pool]++; osdlist[osds[i]];}<br>}<br>END {<br>printf(“\n”);<br>printf(“pool :\t”); for (i in poollist) printf(“%s\t”,i); printf(“| SUM \n”);<br>for (i in poollist) printf(“——–”); printf(“—————-\n”);<br>for (i in osdlist) { printf(“osd.%i\t”, i); sum=0;<br>for (j in poollist) { printf(“%i\t”, array[i,j]); sum+=array[i,j]; poollist[j]+=array[i,j] }; printf(“| %i\n”,sum) }<br>for (i in poollist) printf(“——–”); printf(“—————-\n”);<br>printf(“SUM :\t”); for (i in poollist) printf(“%s\t”,poollist[i]); printf(“|\n”);<br>}’</p>
+</blockquote>
+</li>
+</ul>
+<ol>
+<li>查看mon</li>
+</ol>
+<ul>
+<li>选举信息<br>ceph quorum_status</li>
+<li>各mon状态<br>ceph mon dump</li>
+<li>宏观mon状态<br>ceph mon stat</li>
+<li>查看osdmap<br>ceph mon getmap -o monmap<br>monmaptool –print monmap</li>
+</ul>
+<p>3.查看rbd</p>
+<ul>
+<li>查看iamge状态<br>rbd info pool/image</li>
+</ul>
+<ol>
+<li>查看集群健康状况</li>
+</ol>
+<ul>
+<li>查看health </li>
+<li>ceph -s</li>
+<li>ceph -w</li>
+<li>ceph health detail</li>
+</ul>
+<ol>
+<li>查看并修改crushmap<br>ceph osd getcrushmap -o ma-crush-map<br>crushtool -d ma-crush-map -o ma-crush-map.txt<br>vim ma-crush-map.txt<br>crushtool -c ma-crush-map.txt -o crushmap<br>sudo ceph osd setcrushmap crushmap<br>给不同pool设置不同的ruleset<br>ceph osd pool set pool_name crush_ruleset 2</li>
+</ol>
+<h3 id="3-3_扩容指令">3.3 扩容指令</h3><p>添加新osd本质是修改集群的osdmap信息，步骤是<br>ceph osd getcrushmap -o map<br>crushtool -d map -o map.txt<br>按需求修改map.txt<br>crushtool -c map.txt -o newmap<br>ceph osd setcrushmap -i newmap</p>
+<h3 id="3-4_测试指令">3.4 测试指令</h3><p>ceph自带压测指令<br>rados -p test -b 4096 bench 120 write -t 32 –run-name test<br>解释如下：</p>
+<blockquote>
+<p>-p test 指定测试pool为test<br>4096指定对象大小<br>120指定测试时间<br>32指定线程数</p>
+</blockquote>
+<h3 id="3-5_认证指令">3.5 认证指令</h3><ol>
+<li>列出所有用户:ceph auth list</li>
+<li>添加用户：ceph-authtool –create-keyring /tmp/ceph.client.admin.keyring –gen-key -n client.admin –set-uid=0 –cap mon ‘allow     <em>‘ –cap osd ‘allow </em>‘ –cap mds ‘allow’</li>
+<li>删除用户:ceph auth del</li>
+</ol>
+<h3 id="3-5_其他配置参数">3.5 其他配置参数</h3><ol>
+<li>后端存储改为keyvalue store<br>osd_objectstore = keyvaluestore-dev</li>
+</ol>
+<h2 id="4-_其他">4. 其他</h2><h3 id="4-1_TCMALLOC问题的解决">4.1 TCMALLOC问题的解决</h3><h4 id="现象：">现象：</h4><p>sudo perf top -p pid 发现tcmalloc 占用高</p>
+<h4 id="原因：">原因：</h4><p>ceph 0.87.2 与 机器上较低版本的 tcmalloc 兼容性有问题</p>
+<h4 id="解决方案有两个：">解决方案有两个：</h4><ul>
+<li>将ceph内存管理换为jemalloc </li>
+<li>提高本地tcmalloc版本,同时调高max_bytes(export max_bytes=128m)<br>####方案一实现 <blockquote>
+<p>1.编译ceph<br>   sudo yum install libunwind-devel.x86_64<br>   ./configure –without-tcmalloc and –with-jemalloc<br>   make<br> 2.替换 /usr/bin/ceph-osd<br> 3.安装jemalloc</p>
+</blockquote>
+</li>
+</ul>
+<h3 id="方案二实现">方案二实现</h3><blockquote>
+<p>1.编译gperftool<br>    ./configure –enable-frame-pointers<br>    make</p>
+<ol>
+<li>修改环境变量并重启<br> export TCMALLOC_MAX_TOTAL_THREAD_CACHE_BYTES=128M<br>  restart osd</li>
+</ol>
+</blockquote>
+<h3 id="4-2_ceph_rgw安装部署">4.2 ceph rgw安装部署</h3><p>1.安装 radosrgw<br>2.修改/etc/ceph/conf<br>添加：</p>
+<p>[client.radosgw.gateway]<br>  host = yourip<br>  log file = /var/log/ceph/client.radosgw.gateway.log<br>  rgw_frontends = civetweb<br>  rgw print continue = true<br>  keyring = /etc/ceph/keyring.radosgw.gateway<br>  rgw_socket_path = /var/run/ceph/ceph.radosgw.gateway.civetweb.sock</p>
+<p>3.创建keyring</p>
+<ol>
+<li>sudo ceph-authtool -C -n client.radosgw.gateway –gen-key /etc/ceph/keyring.radosgw.gateway</li>
+<li>sudo ceph-authtool -n client.radosgw.gateway –cap mon ‘allow rw’ –cap osd ‘allow rwx’ /etc/ceph/keyring.radosgw.gateway</li>
+<li>sudo ceph auth add client.radosgw.gateway –in-file=keyring.radosgw.gateway</li>
+</ol>
+<p>4.sudo radosgw -n client.radosgw.gateway -c /etc/ceph/ceph.conf -f –log-to -stderr –debug-rgw=20 –debug-ms=1<br>5.sudo radosgw-admin user create –uid=”testuser” –display-name=”First User”<br>6.拷 keyring 到客户机</p>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/分布式存储/" rel="tag">#分布式存储</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/05/01/ceph crush算法/" rel="prev">crush算法介绍</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/03/01/linux命令之待整理/" rel="next">linux命令之待整理</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="wenduo" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wenduo</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">標籤</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-_ceph项目概述"><span class="nav-number">1.</span> <span class="nav-text">一. ceph项目概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1_ceph架构及几个主要流程简介"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 ceph架构及几个主要流程简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2_读写流程简介"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 读写流程简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3_scrub机制简介"><span class="nav-number">1.3.</span> <span class="nav-text">1.3 scrub机制简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4_数据恢复的机制简介"><span class="nav-number">1.4.</span> <span class="nav-text">1.4 数据恢复的机制简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a-_osd节点临时挂掉后，通过peering恢复数据。peering过程时间"><span class="nav-number">1.4.1.</span> <span class="nav-text">a. osd节点临时挂掉后，通过peering恢复数据。peering过程时间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5_heartbeat机制简介"><span class="nav-number">1.5.</span> <span class="nav-text">1.5 heartbeat机制简介</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-_部署"><span class="nav-number">2.</span> <span class="nav-text">二. 部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-_常用运维指令，配置参数及资源"><span class="nav-number">3.</span> <span class="nav-text">三. 常用运维指令，配置参数及资源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1_读/在线改参数"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 读/在线改参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2_查看指令"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 查看指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3_扩容指令"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 扩容指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4_测试指令"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 测试指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5_认证指令"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 认证指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5_其他配置参数"><span class="nav-number">3.6.</span> <span class="nav-text">3.5 其他配置参数</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-_其他"><span class="nav-number">4.</span> <span class="nav-text">4. 其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1_TCMALLOC问题的解决"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 TCMALLOC问题的解决</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#现象："><span class="nav-number">4.1.1.</span> <span class="nav-text">现象：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#原因："><span class="nav-number">4.1.2.</span> <span class="nav-text">原因：</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#解决方案有两个："><span class="nav-number">4.1.3.</span> <span class="nav-text">解决方案有两个：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#方案二实现"><span class="nav-number">4.2.</span> <span class="nav-text">方案二实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2_ceph_rgw安装部署"><span class="nav-number">4.3.</span> <span class="nav-text">4.2 ceph rgw安装部署</span></a></li></ol></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenduo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

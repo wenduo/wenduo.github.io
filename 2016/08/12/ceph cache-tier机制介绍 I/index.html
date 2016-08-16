@@ -1,0 +1,619 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+
+
+  <meta name="keywords" content="分布式存储," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description" content="本文介绍ceph cache-tier的内部机制，同时对生产环境下提出的一些问题给出解答。本文是360基础架构组ceph系列第二篇文章。如果你对ceph不太了解，请猛戳[]。
+一. 背景：我们知道容量越大价格越低的存储介质，其读写响应速度就越慢。计算机系统将存储介质由快到慢分级组织起来，逐级访问。这样使得热数据分布在速度更快的上级介质上。提高了平均访问速度。csapp中的存储层次图很好的说明了这点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="cache-tier机制介绍1">
+<meta property="og:url" content="http://yoursite.com/blog/2016/08/12/ceph cache-tier机制介绍 I/index.html">
+<meta property="og:site_name" content="wenduo blog">
+<meta property="og:description" content="本文介绍ceph cache-tier的内部机制，同时对生产环境下提出的一些问题给出解答。本文是360基础架构组ceph系列第二篇文章。如果你对ceph不太了解，请猛戳[]。
+一. 背景：我们知道容量越大价格越低的存储介质，其读写响应速度就越慢。计算机系统将存储介质由快到慢分级组织起来，逐级访问。这样使得热数据分布在速度更快的上级介质上。提高了平均访问速度。csapp中的存储层次图很好的说明了这点">
+<meta property="og:updated_time" content="2016-08-16T14:35:03.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="cache-tier机制介绍1">
+<meta name="twitter:description" content="本文介绍ceph cache-tier的内部机制，同时对生产环境下提出的一些问题给出解答。本文是360基础架构组ceph系列第二篇文章。如果你对ceph不太了解，请猛戳[]。
+一. 背景：我们知道容量越大价格越低的存储介质，其读写响应速度就越慢。计算机系统将存储介质由快到慢分级组织起来，逐级访问。这样使得热数据分布在速度更快的上级介质上。提高了平均访问速度。csapp中的存储层次图很好的说明了这点">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> cache-tier机制介绍1 | wenduo blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">wenduo blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            歸檔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            標籤
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              cache-tier机制介绍1
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-08-12T15:30:16+08:00" content="2016-08-12">
+            2016-08-12
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>本文介绍ceph cache-tier的内部机制，同时对生产环境下提出的一些问题给出解答。<br>本文是360基础架构组ceph系列第二篇文章。如果你对ceph不太了解，请猛戳[]。</p>
+<h2 id="一-_背景：">一. 背景：</h2><p>我们知道容量越大价格越低的存储介质，其读写响应速度就越慢。计算机系统将存储介质由快到慢分级组织起来，逐级访问。这样使得热数据分布在速度更快的上级介质上。提高了平均访问速度。csapp中的存储层次图很好的说明了这点。这里就不贴图了。<br>同样的目的，ceph引入cache-tier特性，来更好的组织存储介质。一个典型的应用场景是：在一个ceph集群中，为一个存于机械盘的base-pool配置一个存于ssd盘的tier-pool作为其cache-tier，热数据被cache在tier-pool，享受ssd的读写性能。</p>
+<hr>
+<h2 id="二-_设置cache_tier">二. 设置cache tier</h2><p>设置cache tier很简单，假设你有两个pool tier和base，想将tier作为base的cache。那么只需要执行下面的命令：</p>
+<blockquote>
+<p>ceph osd tier add base tier<br>ceph osd tier cache-mode tier writeback<br>ceph osd tier set-overlay base tier</p>
+<p>ceph osd pool set tier hit_set_type bloom<br>ceph osd pool set tier hit_set_count 12<br>ceph osd pool set tier hit_set_period 14400<br>ceph osd pool set tier target_max_bytes 1000000000000</p>
+</blockquote>
+<p>我们先来解释前面三条命令的内部实现，后面4条命令与回刷机制有关，我们将在后续讲解.<br>我们知道，每个pool对应一个pg_pool_t结构体保存其信息，有如下成员：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">set</span>&lt;<span class="keyword">uint64_t</span>&gt; tiers;      <span class="comment">///&lt; pools that are tiers of us</span></span><br><span class="line"><span class="keyword">int64_t</span> tier_of;         <span class="comment">///&lt; pool for which we are a tier</span></span><br><span class="line"><span class="keyword">int64_t</span> read_tier;       <span class="comment">///&lt; pool/tier for objecter to direct reads to</span></span><br><span class="line"><span class="keyword">int64_t</span> write_tier;      <span class="comment">///&lt; pool/tier for objecter to direct writes to</span></span><br><span class="line"><span class="keyword">cache_mode_t</span> cache_mode;  <span class="comment">///&lt; cache pool mode</span></span><br></pre></td></tr></table></figure></p>
+<p>我们知道，ceph执行设置一个管理命令的内部过程为：客户端将请求发送到monitor集群，monitor集群更新pool对应的pg_pool_t结构体并重新存入osdmap，通过paxos commit这条更改并更新集群epoch，客户端下次访问base-pool时，根据新epoch拉取到最新的osdmap，取出对应pool的pg_pool_t,并是否决定转发到cache-tier pool中。<br>因此设置cache-tier的代码位于 src/mon/OSDMnitor.cc 中。</p>
+<h3 id="1-_add_base_tier">1. add base tier</h3><p>这个命令实际上设置了base-pool的tier字段为tier-pool，设置tier-pool的tier-of字段为base-pool。<br>这个过程可以看到设置tier有下面几个限制：</p>
+<blockquote>
+<ol>
+<li>base-pool不能是别人的cache tier</li>
+<li>tier不能已经是别人的tier 这两条是为了防止循环写入转发</li>
+<li>tier-pool 必须是一个空pool，这是为了防止误读</li>
+<li>tier-pool不能是ec编码的pool，我们知道ec编码是牺牲响应时间来提高存储空间效率的方案，而cache tier则放弃牺牲空间存储效率来提高响应时间，这两个是不相容的。</li>
+</ol>
+</blockquote>
+<p>这些判断逻辑能够防止对内部不够了解的用户误用cache-tier。我觉得这是很好的设计思路。</p>
+<h3 id="2-_set_cache-mode">2. set cache-mode</h3><p>我们知道操作系统的page cache有三种策略，no-write，write-back，write-through。用户可以根据对响应速度及一致性的不同要求，权衡使用不同的cache策略。同样，用户可以权衡设置tier-pool的cache-mode属性。这些mode对应的具体机制我们在第三章进行介绍</p>
+<blockquote>
+<p>none：不做cache<br>forward：将所有请求转发到base<br>writeback：<br>readonly：<br>readforward：<br>proxy：<br>readproxy：</p>
+</blockquote>
+<p>forward与overlay区别？ overlay由客户端转发，forward进行一次代理。<br>proxy及forward区别是什么？<br>read only 机制是什么？</p>
+<h3 id="3-_set_overlay">3. set overlay</h3><p>将base的read-tier，write-tier字段设为tier-pool。<br>客户端在向base-pool发送请求时，会根据读写请求将base-pool id替换为read或write-tier的id。这段逻辑位于src/osdc/Objecter.cc 的calc_target函数中。<br>我们知道，这个函数接下来会算出对象所在的pg并用crush算法算出对应的osd列表，这里不在赘述。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (is_read &amp;&amp; pi-&gt;has_read_tier())</span><br><span class="line">    t-&gt;target_oloc.pool = pi-&gt;read_tier;</span><br><span class="line"><span class="keyword">if</span> (is_write &amp;&amp; pi-&gt;has_write_tier())</span><br><span class="line">    t-&gt;target_oloc.pool = pi-&gt;write_tier;</span><br></pre></td></tr></table></figure></p>
+<ul>
+<li>set hit-set-type/hist-set-count/hit-set-period/</li>
+<li>set min-read-latency-forpromote/write-latency-forpromote</li>
+<li>set cache-target-dirty-ratio</li>
+<li>set cache-min-evict/flush-age</li>
+</ul>
+<h2 id="三-_cachemode与读写流程">三. cachemode与读写流程</h2><p>##在几个问题：</p>
+<ol>
+<li>tier的内部机制</li>
+<li>几种模式，及set/get过程中何时根据模式转发发到对应pg</li>
+<li>tier-pool如何回刷？这些参数如何优化？</li>
+<li>bloomfilter是干神马用的？</li>
+<li>如何配比ssd与sata盘</li>
+</ol>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/分布式存储/" rel="tag">#分布式存储</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/08/16/php相关/" rel="prev">php相关</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/05/01/c interface and implementation/" rel="next">c-interface-and-implementation</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="wenduo" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wenduo</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">標籤</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一-_背景："><span class="nav-number">1.</span> <span class="nav-text">一. 背景：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二-_设置cache_tier"><span class="nav-number">2.</span> <span class="nav-text">二. 设置cache tier</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-_add_base_tier"><span class="nav-number">2.1.</span> <span class="nav-text">1. add base tier</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-_set_cache-mode"><span class="nav-number">2.2.</span> <span class="nav-text">2. set cache-mode</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-_set_overlay"><span class="nav-number">2.3.</span> <span class="nav-text">3. set overlay</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三-_cachemode与读写流程"><span class="nav-number">3.</span> <span class="nav-text">三. cachemode与读写流程</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenduo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

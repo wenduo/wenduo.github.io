@@ -1,0 +1,696 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+
+
+  <meta name="keywords" content="生产力工具," />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description" content="##github相关
+
+403 fatal: HTTP request failed解决方法：修改 .git/config 为https://wenduo@github.com……..
+
+
+##git 拉取
+
+拉取某个远程分支到本地，同时本地分支直接push到远端git checkout -b branch origin/branch
+
+
+##git 创建
+
+想直接要git的某一个taggit c">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git 指南">
+<meta property="og:url" content="http://yoursite.com/blog/2015/08/01/git指南/index.html">
+<meta property="og:site_name" content="wenduo blog">
+<meta property="og:description" content="##github相关
+
+403 fatal: HTTP request failed解决方法：修改 .git/config 为https://wenduo@github.com……..
+
+
+##git 拉取
+
+拉取某个远程分支到本地，同时本地分支直接push到远端git checkout -b branch origin/branch
+
+
+##git 创建
+
+想直接要git的某一个taggit c">
+<meta property="og:updated_time" content="2016-08-16T14:30:12.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git 指南">
+<meta name="twitter:description" content="##github相关
+
+403 fatal: HTTP request failed解决方法：修改 .git/config 为https://wenduo@github.com……..
+
+
+##git 拉取
+
+拉取某个远程分支到本地，同时本地分支直接push到远端git checkout -b branch origin/branch
+
+
+##git 创建
+
+想直接要git的某一个taggit c">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> git 指南 | wenduo blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <div class="container one-column page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">wenduo blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            歸檔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            標籤
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              git 指南
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        <span itemprop="articleBody"><p>##github相关</p>
+<ol>
+<li>403 fatal: HTTP request failed解决方法：<br>修改 .git/config 为<a href="https://wenduo@github.com" target="_blank" rel="external">https://wenduo@github.com</a>……..</li>
+</ol>
+<hr>
+<p>##git 拉取</p>
+<ol>
+<li>拉取某个远程分支到本地，同时本地分支直接push到远端<br>git checkout -b branch origin/branch</li>
+</ol>
+<hr>
+<p>##git 创建</p>
+<ol>
+<li><p>想直接要git的某一个tag<br>git checkout tags/riak-1.4.2 -b tag1.4</p>
+</li>
+<li><p>在github上面, 想在dev上面连接上github, 要在github配置一下你再dev的id_rsa.pub就可以了. 然后就可以当用户提交了. 这样只要建立一个项目, 就可以随时的提交了</p>
+</li>
+<li><p>git的config git config —-list 就可以了</p>
+</li>
+<li><p>git rm –cached filename<br>这个git 把已经提交上去的文件删除掉</p>
+</li>
+<li><p>git config –global core.excludesfile ~/.gitignore_global<br>然后这样就可以配置全局的gitignore</p>
+</li>
+<li><p>git stash 就可以把当前的提交放在stash里面, 这个时候你的分支下面所有的东西就存起来, 变成线上的分支情况了. 什么时候 然后想要的时候再git stash pop 出来就可以了</p>
+</li>
+<li><p>git stash 完以后, git stash branch multiGet, 把stash里面的代码生成出multiGet分支. 然后你在multiGet里面commit 以后, 再checkout回 master 就可以了</p>
+</li>
+<li><p>git 回退到历史版本.<br>git reset 72066610b8f78e042091d762606c4fdca431c028<br>所以一个回退到历史版本, 然后把线上这个版本放在一个分支的操作流程是 先git reset 到某一个版本, 然后git stash, 然后 git stash branch multiGet(这里建立一个分支) ; git commit (提交到本地分支). 然后 checkout master. 然后直接git push -f origin master 就可以覆盖线上的了.</p>
+</li>
+<li><p>git checkout local/proxy.ini 就可以将本地的修改给去掉了. 相当于svn revert了</p>
+</li>
+<li><p>git config –global color.ui auto</p>
+</li>
+<li><p>git config –global alias.st status</p>
+</li>
+<li><p>把线上的某一个branch 直接拉下来在本地开发, 以后pull push 就对应线上的这个branch了<br>git checkout -b 2.0 origin/2.0<br>这里就是把线上的 2.0 版本拉下来, 在本地直接建立一个2.0的分支</p>
+</li>
+<li><p>强调一下 把线上的某一个分支拉下来开发 git checkout -b experimental origin/experimental</p>
+</li>
+<li><p>git ignore 某一个项目的.gitignore. 修改.git/info/exclude 这个项目下面的这个文件即可</p>
+</li>
+</ol>
+<p>15.git tag -a 1.5.1 d087e24f699badca8dd399b7ee8e5ea7619011c3 -m “1.5.1 tag”<br>checkout 某一个tag 的方法 git checkout -b 1.6.6 tags/1.6.6<br>添加一个以某一个版本为基础的叫1.5.1的tag<br>git push origin –tags<br>将这个tag添加到远程分支<br>删除tag 的方法<br>先在本地 git tag -d tag_name<br>然后 git push origin :refs/tags/tag_name<br>这样就把本地和远程的tag_name 这个tag 都删除掉了</p>
+<p>git fetch –tags 更新拉取线上最新的tags</p>
+<ol>
+<li><p>git 把多次的提交merge 成一个, 在master merge branch的时候<br>git merge –squash develop<br>这样在提交的时候develop上面所有的提交就变成一次提交</p>
+</li>
+<li><p>git reset HEAD local/proxy.ini 这句话把提交到本地的cached里面的文件重新拉回本地未提交区域</p>
+</li>
+<li><p>修改最后一次提交的注释信息<br>git commit –amend 然后可以具体写修改的注释</p>
+</li>
+<li><p>git 删除远程上面的某个分支的办法<br>git push origin :mario 这里就把 remotes/origin/mario 这个分支给删除掉了</p>
+</li>
+<li><p>当 git pull 的时候加入本地有很多东西没有加上去, 而你又不想要了. 那么就可以清除掉<br>error: The following untracked working tree files would be overwritten</p>
+</li>
+</ol>
+<p>解决方法 git clean -d -fx “”</p>
+<ol>
+<li><p>git 把本地的多次提交变成一次提交<br>git reset –soft HEAD~3 &amp;&amp;<br>git commit</p>
+</li>
+<li><p>git 忽略文件的权限<br>git ignore file permission<br>git config core.filemode false</p>
+</li>
+<li><p>git 将多次提交合并成一次提交, 在已经提交以后的方法<br>git diff master &gt; ~/a; git checkout master; git checkout -b pull_request; git apply ~/a; git commit -a -m “Pull Request”</p>
+</li>
+<li><p>git 碰到 unmerged 的时候, 不想要处理这些冲突的时候, 直接git reset 这些文件就可以</p>
+</li>
+<li><p>当遇到冲突并且你已经pull 的时候, 可以用这个 git-reflog 这个命令找出你merge 之前的版本.<br>然后强行的 git reset –hard dd659b7(版本号) 就可以了</p>
+</li>
+<li><p>git submodule</p>
+</li>
+</ol>
+<p>git submodule add <a href="https://github.com/chaconinc/DbConnector" target="_blank" rel="external">https://github.com/chaconinc/DbConnector</a></p>
+<p>git submodule add git@github.com:baotiao/pink.git ./third/pink<br>添加到指定目录</p>
+<p><a href="http://git-scm.com/book/en/v2/Git-Tools-Submodules" target="_blank" rel="external">http://git-scm.com/book/en/v2/Git-Tools-Submodules</a></p>
+<ol>
+<li>git clean -dxf<br>git在进行branch 切换的时候, 需要考虑到原分支下面还有一些未删除的多余信息, 所以要clean 一下</li>
+</ol>
+<p>分支操作：<br>删除本地分支：<br>  git tag -d 标签名<br>删除远程分支：<br>   git push origin :refs/tags/标签名  </p>
+<p>创建本地分支：<br>   git tag 标签名git push origin :refs/tags/标签名<br>推送到远端：<br>    git push origin 标签名  </p>
+<p>Git show </p>
+<p>##git stash</p>
+<ol>
+<li>git stash list</li>
+<li>git stash applyç</li>
+</ol>
+</span>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/生产力工具/" rel="tag">#生产力工具</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2015/08/01/小而美的redis之dynamic string/" rel="prev">小而美的redis之dynamic_string</a>
+            
+          </div>
+
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2015/08/01/vim 使用/" rel="next">vim使用</a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+ </div>
+
+        
+
+        
+          <div class="comments" id="comments">
+            
+          </div>
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目錄
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            本站概覽
+          </li>
+        </ul>
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="wenduo" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wenduo</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">標籤</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+        <section class="post-toc-wrap sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator"></div>
+          <div class="post-toc">
+            
+            
+              <p class="post-toc-empty">此文章未包含目錄</p>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator"></div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenduo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.1" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 0.4 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    var $tocContent = $('.post-toc-content');
+    if (isDesktop() && CONFIG.sidebar === 'post') {
+      if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+        displaySidebar();
+      }
+    }
+  });
+</script>
+
+
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>

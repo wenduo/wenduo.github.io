@@ -1,0 +1,1396 @@
+<!doctype html>
+<html class="theme-next use-motion ">
+<head>
+  
+
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" type="text/css" href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5"/>
+
+
+
+  <link href='//fonts.googleapis.com/css?family=Lato:300,400,700,400italic&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+
+
+<link rel="stylesheet" type="text/css" href="/css/main.css?v=0.4.5.1"/>
+
+
+
+
+  <meta name="keywords" content="Hexo,next" />
+
+
+
+
+
+  <link rel="shorticon icon" type="image/x-icon" href="/favicon.ico?v=0.4.5.1" />
+
+
+<meta name="description">
+<meta property="og:type" content="website">
+<meta property="og:title" content="wenduo blog">
+<meta property="og:url" content="http://yoursite.com/blog/page/2/index.html">
+<meta property="og:site_name" content="wenduo blog">
+<meta property="og:description">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="wenduo blog">
+<meta name="twitter:description">
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var CONFIG = {
+    scheme: '',
+    sidebar: 'post'
+  };
+</script>
+
+  <title> wenduo blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="">
+
+  <!--[if lte IE 8]>
+  <div style=' clear: both; height: 59px; padding:0 0 0 15px; position: relative;margin:0 auto;'>
+    <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+      <img src="http://7u2nvr.com1.z0.glb.clouddn.com/picouterie.jpg" border="0" height="42" width="820"
+           alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today or use other browser ,like chrome firefox safari."
+           style='margin-left:auto;margin-right:auto;display: block;'/>
+    </a>
+  </div>
+<![endif]-->
+  
+
+
+
+  <div class="container one-column 
+   page-home 
+">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><h1 class="site-meta">
+  <span class="logo-line-before"><i></i></span>
+  <a href="/" class="brand" rel="start">
+      <span class="logo">
+        <i class="icon-next-logo"></i>
+      </span>
+      <span class="site-title">wenduo blog</span>
+  </a>
+  <span class="logo-line-after"><i></i></span>
+</h1>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu ">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            <i class="menu-item-icon icon-next-home"></i> <br />
+            首頁
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            <i class="menu-item-icon icon-next-archives"></i> <br />
+            歸檔
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            <i class="menu-item-icon icon-next-tags"></i> <br />
+            標籤
+          </a>
+        </li>
+      
+
+      
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div id="content" class="content"> 
+  <section id="posts" class="posts-expand">
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/linux之IO模式与c10k/" itemprop="url">
+                linux之IO模式与c10k
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T15:30:16+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p><a href="http://segmentfault.com/a/1190000003063859" target="_blank" rel="external">Linux IO 模式</a></p>
+<h3 id="1-_背景：">1. 背景：</h3><p>IO 消耗大量时间。进程需要等待IO。<br>IO 过程分为2步：</p>
+<blockquote>
+<p>准备数据<br>内核空间（内核内存块）写入用户空间（进程内存块）</p>
+</blockquote>
+<p>进程等待IO时，自发进入阻塞状态，不占cpu。</p>
+<h3 id="2-_IO_分类">2. IO 分类</h3><p>根据内核是否直接返回响应</p>
+<p>####1. 阻塞IO<br> 在io过程的两步中内核均不返回消息。kernel完成第二步后返回结果。</p>
+<p><img src="http://segmentfault.com/img/bVm1c3" alt="阻塞io"></p>
+<p>####2. 非阻塞IO:</p>
+<p> 在io过程中的第一步不断试图read数据（轮询kernel）。面对每次read，kernel直接响应结果（是否准备好）。<br><img src="http://segmentfault.com/img/bVm1c4" alt="非阻塞io"></p>
+<p>####3. IO多路复用：<br>进程调用select/poll/epoll.阻塞。系统监视所有select的socket，当数据准备好时返回响应，唤醒进程。这样一个进程可以等待多个文件描述符。</p>
+<p> <img src="http://segmentfault.com/img/bVm1c5" alt="IO多路复用"></p>
+<p>####4.异步IO</p>
+<p>以上都是同步IO(进程在存在挂起过程).异步IO如下图</p>
+<p><img src="http://segmentfault.com/img/bVm1c8" alt="此处输入图片的描述"></p>
+<hr>
+<h2 id="结论：">结论：</h2><p>各模式IO对比如下图所示</p>
+<p><img src="http://segmentfault.com/img/bVm1c9" alt="各IO模式对比"></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/11/01/分布式数据库之 mnesia 简介/" itemprop="url">
+                分布式数据库mnesia基本介绍
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-11-01T15:30:16+08:00" content="2015-11-01">
+            2015-11-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="0-_序">0. 序</h2><p><strong>Mneisa</strong> 是<strong>erlang/otp</strong> 中内置的分布式数据库系统，支持对erlang原生数据的操作。在rabbitmq，ejabbered中被使用。bada使用其作为元信息管理模块。本文将按如下顺序介绍mnesia。</p>
+<blockquote>
+<ul>
+<li>mnesia基本特性与使用</li>
+<li>mnesia系统中各组件及其启动过程</li>
+<li>mnesia的数据存储</li>
+<li>mnesia中的锁</li>
+<li>mnesia中的事务实现</li>
+<li>mnesia的二次启动过程</li>
+<li>mnesia网络分区处理</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="1-_mnesia基本特性及使用">1. mnesia基本特性及使用</h2><p> mnesia为了通信应用而设计，其特点有：</p>
+<blockquote>
+<p>灵活配置各表存储位置，存储种类<br>运行时修改元信息<br>支持多种事务操作<br>单节点挂掉后不影响整个集群使用</p>
+</blockquote>
+<h4 id="1-1_建立数据库">1.1  建立数据库</h4><p>mnesia中的数据表分为元信息表schema table及数据表 data table。schema表保存集群信息及各表的元信息，包括集群各节点，各表的存储位置，存储方式等。所以在mnesia初次启动前，我们要建立元表。<br><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">create_schema<span class="function"><span class="params">(DiscNodes)</span> -&gt;</span> ok | &#123;error,Reason&#125;</span><br></pre></td></tr></table></figure></p>
+<p>建立元信息表后，即可启动mnesia，以bada中mnesia的使用为例,seed节点首次建立数据库及数据表的代码实例如下：<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mnesia:create_schema([node()]),</span><br><span class="line">mnesia:start(),</span><br><span class="line">mnesia:create_table(node, [<span class="tuple">&#123;disc_copies, [<span class="function_name">node</span>()]&#125;</span>, <span class="tuple">&#123;type, set&#125;</span>, <span class="tuple">&#123;majority, true&#125;</span>]),</span><br></pre></td></tr></table></figure></p>
+<p>creata_table即创建数据表操作。几个主要属性解释如下：</p>
+<blockquote>
+<ol>
+<li><p>{disc_copies, Nodelist}:<br>   mnesia中的表可以按照3种方式进行存储：ram,disc_copy,disc_only<br>   disc_copies在内存磁盘中均有一份表。该属性配置哪些节点以disc_copy 方式存储数据表。</p>
+</li>
+<li><p>{majority，true}：<br>   如果设置表的majority属性为true，当对表中加写锁或进行事务操作时，如节点不在majority集合，则直接abort。</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="1-2_更改表结构状态">1.2 更改表结构状态</h4><p>mnesia支持元信息的运行时修改，如<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">//通知系统添加新节点</span><br><span class="line">mnesia:change_config(extra_db_nodes, <span class="variable">Hostnode</span>),</span><br><span class="line">//本地节点以disc_copy方式存储schema信息</span><br><span class="line"> mnesia:change_table_copy_type(schema, node(), disc_copies),</span><br><span class="line">//给replicaset表添加disc_copie节点</span><br><span class="line">mnesia:add_table_copy(replicaset, <span class="variable">Node</span>, disc_copies),</span><br></pre></td></tr></table></figure></p>
+<p>我们将在后续介绍这个几个函数的逻辑流程</p>
+<h3 id="1-3_读写">1.3 读写</h3><p>mnesia中操作可以选择多种协议：</p>
+<blockquote>
+<p>dirty_write()   :无事务无锁写，直接将commit结果发生到参与节点<br> non_transaction(Fun):无事务，Fun中的锁正常加<br>  transaction(Fun)：正常事务</p>
+</blockquote>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">mnesia:dirty_read(<span class="variable">Tab</span>,<span class="variable">Key</span>).</span><br><span class="line"><span class="function"><span class="title">dirty_write</span><span class="params">(<span class="tuple">&#123;<span class="variable">Tab</span>,<span class="variable">Key</span>,<span class="variable">Val</span>&#125;</span>)</span>.</span><br><span class="line"></span><br><span class="line">F<span class="title">un</span>=<span class="title">fun</span><span class="params">()</span> -&gt;</span> <span class="function_name">write</span>(<span class="tuple">&#123;<span class="variable">Tab</span>,<span class="variable">Key</span>,<span class="variable">Val</span>&#125;</span>), </span><br><span class="line"><span class="function_name">mnesia:transaction</span>(<span class="variable">Fun</span>).</span><br></pre></td></tr></table></figure>
+<h2 id="2-_mnesia系统中各组件及其启动过程">2. mnesia系统中各组件及其启动过程</h2><h3 id="2-1_各组件对应文件及作用">2.1 各组件对应文件及作用</h3><table>
+<thead>
+<tr>
+<th>各组件</th>
+<th style="text-align:right">功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mnesia</td>
+<td style="text-align:right">公共接口</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_controller</td>
+<td style="text-align:right">负责表的加载过程决策</td>
+<td>gen_server</td>
+</tr>
+<tr>
+<td>mnesia_recover</td>
+<td style="text-align:right">记录事务</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_monitor</td>
+<td style="text-align:right">监控其他节点</td>
+<td>gen_server</td>
+</tr>
+<tr>
+<td>mnesia_schema</td>
+<td style="text-align:right">元信息事务</td>
+<td>gen_server</td>
+</tr>
+<tr>
+<td>mnesia_load_table</td>
+<td style="text-align:right">加载表</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_late_load_table</td>
+<td style="text-align:right">强制/孤儿节点加载表</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_recover</td>
+<td style="text-align:right">事务恢复</td>
+</tr>
+<tr>
+<td>mnesia_dumper</td>
+<td style="text-align:right">将log转存</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_tm</td>
+<td style="text-align:right">事务管理</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_log</td>
+<td style="text-align:right">日志</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_locker</td>
+<td style="text-align:right">锁管理</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_dumper</td>
+<td style="text-align:right">日志转存入数据表</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_subscr</td>
+<td style="text-align:right">订阅消息</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_event</td>
+<td style="text-align:right">事件处理</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_sp</td>
+<td style="text-align:right">产生进程报告</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_frag</td>
+<td style="text-align:right">大表分片存储</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_frag_hash</td>
+<td style="text-align:right">大表分片存储</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_lib</td>
+<td style="text-align:right">公用的库函数</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_index</td>
+<td style="text-align:right">索引</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_checkpoint</td>
+<td style="text-align:right">检查点</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_bup</td>
+<td style="text-align:right">备份</td>
+<td>无</td>
+</tr>
+<tr>
+<td>mnesia_backup</td>
+<td style="text-align:right">备份所需回调函数的一个实现，可被替换</td>
+<td>无</td>
+</tr>
+</tbody>
+</table>
+<h3 id="2-2_启动过程">2.2 启动过程</h3><p>mnesia是一个OTP应用,启动过程和其他OTP应用一致<br>1.Kernel - application controler - start mnesia_sup<br>2.Mnesia_sup是一个supervisor<br>监控并按顺序启动如下进程<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="tuple">&#123;<span class="variable">Mnesia_sup</span>,start_event&#125;</span> -&gt;</span><br><span class="line">                        mnesia_kernel_sup</span><br><span class="line">                        gen_event:start<span class="tuple">&#123;mnesia_event&#125;</span>,    </span><br><span class="line">                        <span class="variable">Handler</span> = mnesia_monitor:get_env(event_module),</span><br><span class="line">                        gen_event:add_handler(mnesia_event, <span class="variable">Handler</span>, []),</span><br><span class="line"><span class="tuple">&#123;mnesia_kernel_sup,start&#125;</span>-&gt;</span><br><span class="line">						mnesia_monitor</span><br><span class="line">						mnesia_subscr</span><br><span class="line">						mnesia_locker,</span><br><span class="line">						mnesia_recover,</span><br><span class="line">						mnesia_tm,</span><br><span class="line">						mnesia_checkpoint_sup,</span><br><span class="line">						mnesia_snmp_sup</span><br><span class="line">						mnesia_controller</span><br><span class="line">						mnesia_late_loader</span><br></pre></td></tr></table></figure></p>
+<h4 id="2-1_mnesia_monitor的启动">2.1 mnesia_monitor的启动</h4><p>monitor负责mnesia中程序运行监控及运行时数据管理。其启动过程主要做3件事：<br>a. 监控网络状态<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">net_kernel:monitor_nodes(<span class="literal">true</span>)</span><br></pre></td></tr></table></figure></p>
+<p>b. 创建两张ets表保存程序数据 :<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">?ets_new_table(mnesia_gvar, [set, public, named_table]),</span><br><span class="line">?ets_new_table(mnesia_stats, [set, public, named_table]),</span><br></pre></td></tr></table></figure></p>
+<p> mnesia_gvar 储存系统状态信息，各数据表信息等，用于系统运行时状态判断，数据表元信息查询等,使用方式为:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  ets:insert( mnesia_gvar, <span class="tuple">&#123; <span class="tuple">&#123;table,storage_type&#125;</span>, disc_copied &#125;</span> );</span><br><span class="line">  ets:lookup_element( mnesia_gvar, <span class="tuple">&#123;table, storage_type&#125;</span>, <span class="number">2</span>)</span><br><span class="line">```        </span><br><span class="line">mnesia_stats 储存统计信息.</span><br><span class="line">c. 初始化进程字典各变量，如</span><br><span class="line">```erlang</span><br><span class="line"><span class="function"><span class="title">set</span><span class="params">(pending_checkpoints, [])</span>,</span></span><br></pre></td></tr></table></figure></p>
+<h4 id="2-2_mnesia_tm_的启动">2.2 mnesia_tm 的启动</h4><p>mnesia_tm的mnesia的事务管理器。负责事务决议提交恢复等。是mnesia的核心组件。其启动过程分为：</p>
+<blockquote>
+<ol>
+<li>启动mnesia_schema 加载元表</li>
+<li>初始化mnesia_recover，加载过往decision信息</li>
+<li>与其他节点联通</li>
+<li>根据过往decision表及其他节点log信息进行事务恢复</li>
+</ol>
+</blockquote>
+<h4 id="2-3_mnesia_schema_的启动">2.3 mnesia_schema 的启动</h4><p>mnesia_tm和及mnesia_recover的初始化保证了mnesia启动后数据的一致性，我们将在mnesia二次启动部分介绍其恢复机制。mnesia_schema 在mnesia_tm启动过程中被调用，<br>1.从dat表中加载元数据到ets表schema中，以供运行时更改<br>2.从ets表schema中加载各表信息到mnesia_gvar表中以供程序查询<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">Cs</span> = ets_lookup(schema, <span class="variable">Tab</span>, <span class="number">3</span>).</span><br><span class="line"><span class="function"><span class="title">do_set_schema</span><span class="params">(<span class="variable">Tab</span>, <span class="variable">Cs</span>)</span>.</span></span><br></pre></td></tr></table></figure></p>
+<p>schema中数据实际是一个 {schema, TabName, cstuct}数组。cstruct在mnesia.hrl中定义，包含一个表的各项元信息，在create_table中传人的各项参数即为之赋值所用。<br>3.更新各表运行时信息，如where_to_read/write等。该字段保持可用于读或写的活动副本，供程序查询</p>
+<h2 id="3-_数据存储">3. 数据存储</h2><h4 id="3-1_基本文件管理:ets/dets_与disc_log">3.1  基本文件管理:ets/dets 与disc_log</h4><p>mnesia使用ets/dets/disc_log 进行数据管理<br>ets储存在内存中，ets中的table实际上就是一个tuple对的列表，基本操作为增删查改遍历等<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ets:insert(table,<span class="tuple">&#123;key,value&#125;</span>),</span><br><span class="line">ets:look_up(table,key),</span><br><span class="line">ets:look_up_element(table,key,pos),</span><br><span class="line">ets:first(table),</span><br><span class="line">ets:next(table,key1),</span><br></pre></td></tr></table></figure></p>
+<p>dets与ets类似，保存于磁盘中。<br>disc_log文件支持顺序写,chunk读。</p>
+<h4 id="3-2_数据存储">3.2 数据存储</h4><p>mnesia中表有三种存储方式：ram，disc_copy，disc_only。ram以ets存于内存。disc_copy表在内存以ets存储，在磁盘以disc_log形式持久化。以disc_copy表的读写为例，不考虑事务及锁时，一次read即读一次ets表。一次写则进行一次ets写，及一次日志顺序写。日志写满100条或间隔一段时间后进行dump。</p>
+<h4 id="3-3_一次写过程">3.3 一次写过程</h4><blockquote>
+<ol>
+<li>写入ets </li>
+<li>写入latest log。每个一段时间或写满100条会触犯dump</li>
+<li>dump过程中，检测dcd与dcl文件之比。若dcl较小，则将log整理入dcl.否则直接将ets dump到dcd文件中</li>
+</ol>
+</blockquote>
+<h2 id="4-mnesia中的锁">4.mnesia中的锁</h2><ol>
+<li>锁的种类<br>mnesia中有几种锁，读锁，写锁，读表锁，写表锁，粘滞锁。<br>粘滞锁是从效率角度考虑效率之前事务保存下来以便复用的锁。<br>读锁共享，写锁排他。</li>
+<li>wait-die机制：</li>
+</ol>
+<blockquote>
+<p>1.当A,B事务分别持有a,b项的锁，分别给对方加锁时，会产生死锁。<br>2.写排他，读共享，写锁可能会被饿死。</p>
+</blockquote>
+<p>这两类问题可以通过wait-die来解决.<br>我理解的wait-die如下:</p>
+<blockquote>
+<p>给每个事务依事务顺序递增的id。当一个项目被锁上时，另外一个锁请求根据其事务id大小决定是否进入等待队列或返回加锁失败。<br>3, lamport-clock<br>依事务顺序递增的这个id叫做lamport clock。可以保证happen-before 关系:<br>clock(a) &gt; clock(b)  –&gt; a 先于b 或ab不可比</p>
+</blockquote>
+<p>其实现方法如下</p>
+<blockquote>
+<p>a.自身counter随每次事件递增<br>b.事件A向其他节点发送消息时附带自身counter<br>c.接受消息的节点counter更新为 count(A) &lt;-  max（count(A), count(B)）</p>
+</blockquote>
+<p>4.锁释放处理<br>  加锁一般</p>
+<h2 id="5-mnesia中的事务">5.mnesia中的事务</h2><p>无分区 通过事务保证强一致<br>有分区 通过重启时恢复保证最终一致</p>
+<p>####1.事务类型：<br>事务：通过运行时事务保证无分区时的强一致性，mnesia支持多种事务类型：</p>
+<blockquote>
+<p>无锁无事务脏写，一阶段异步；<br>有锁异步事务，一阶段同步锁，一阶段同步一阶段异步事务；<br>有锁同步事务，一阶段同步锁，两阶段同步事务；<br>有锁schema事务，一阶段同步锁，三阶段同步事务，附带schema操作的事务；</p>
+</blockquote>
+<h4 id="1-_dirty_write(_{table,_key,_value}_)">1. dirty_write( {table, key, value} )</h4><p>   跨过分区和锁，直接向各节点发出db_put请求</p>
+<h4 id="2-_异步与同步事务">2. 异步与同步事务</h4><p> mnesia事务中协调者在ask_commit阶段协将整个事务信息（参与节点，修改）发给参与者<br> 见代码</p>
+<p> 几种问题的解决:</p>
+<ol>
+<li>A,B节点的事务a，b 锁了自己后分别锁对方：因为ab事务tid不同，有一个加锁会失败。</li>
+<li>A给BC发do_commit前A就死了:B/C监控到A死，清理事务</li>
+<li>A给BC发do_commit前B就死了:B重启启动后恢复</li>
+<li>A给BC发do_commit 后A死了:B/C协议，只要有人成功即提交成功，否则abort</li>
+</ol>
+<h4 id="3-嵌套事务的实现">3.嵌套事务的实现</h4><p>mnesia支持在事务中执行事务:<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">transaction1:</span><br><span class="line">      a=<span class="number">1</span></span><br><span class="line">      transaction2:a=<span class="number">2</span></span><br><span class="line">      b=<span class="number">3</span></span><br><span class="line">      </span><br><span class="line">store1: <span class="tuple">&#123;lock,a&#125;</span> a=<span class="number">1</span>;</span><br><span class="line">store2 &lt;- store1</span><br><span class="line">store2:a=<span class="number">1</span>;a=<span class="number">2</span></span><br><span class="line">store1 &lt;- store2</span><br><span class="line">store1:a=<span class="number">1</span>;a=<span class="number">2</span>;a=<span class="number">3</span></span><br><span class="line">multi_commit;</span><br></pre></td></tr></table></figure></p>
+<p>*</p>
+<h2 id="6-mnesia的恢复机制">6.mnesia的恢复机制</h2><p> 当一个节点上的mnesia再次启动时，与其他节点联络。根据自己的log和从其他节点查询到的信息进行磁盘中数据表的加载，事务恢复，合并等操作。下面将分别进行介绍</p>
+<h4 id="6-1_mnesia表加载过程">6.1 mnesia表加载过程</h4><ol>
+<li>mnesia再次启动后，节点通过比较decision_log及远程节点之记录，确定数据表的加载机制。外部用户<br>可以通过以下命令等待表正常加载完成或强制加载本地表。<figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="title">wait_for_tables</span><span class="params">(<span class="variable">TabList</span>, <span class="variable">Timeout</span>)</span> -&gt;</span> ok | <span class="tuple">&#123;timeout, <span class="variable">BadTabList</span>&#125;</span> | <span class="tuple">&#123;error, <span class="variable">Reason</span>&#125;</span></span><br><span class="line"><span class="function_name">mnesia:force_load_table</span>([<span class="variable">Tabs</span>])</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>重启后加载表时，根据表的where_to_read查找系统中是否存在active——replica。如果存在则随机选取一个拉取，如果不存在则从本地磁盘加载。</p>
+<h4 id="6-2_备份">6.2 备份</h4><p>mnesia有备份机制<br><figure class="highlight erlang"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mnesia:backup(<span class="string">"/backup.log"</span>).  </span><br><span class="line">mnesia:restore(<span class="string">"/backup.log"</span>, []).</span><br></pre></td></tr></table></figure></p>
+<p>备份的具体过程分三步<br>1、创建检查点：mnesia:activate_checkpoint/1<br>2、执行备份：mnesia:backup_checkpoint/3<br>3、停用检查点：mnesia:deactivate_checkpoint/1<br>可以把检查点理解成一个事务一致的状态</p>
+<h2 id="7-mnesia_网络分区处理">7.mnesia 网络分区处理</h2><p>mnesia调用erlang内部net_kernel作为网络模块<br>net_kernel:monitor()监控其他节点。</p>
+<h4 id="7-1_mnesia_down">7.1 mnesia_down</h4><p>当节点挂掉或断开连接时，其他节点收到net_kernel:monitor发出的mnesia_down信号，释放锁，事务等。</p>
+<h4 id="7-2_mnesia_up">7.2 mnesia_up</h4><p>当B重新加入网络，AB会收到对方的node_up消息：<br>      如A，B分别存有对方的mnesia_down日志  -&gt; 网络分区<br>此后A,B 报告网络分区，等待下一步操作.</p>
+<h4 id="7-3_网络割裂及恢复">7.3 网络割裂及恢复</h4><p>当AB网络分区超过一定时间，A/B的网络模块不在监控对方，这样当网络恢复会整个系统仍然不是连通的。将 B集群整体关闭后 重新启动可以恢复网络</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/shell tricks/" itemprop="url">
+                shell使用
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="tricks">tricks</h2><hr>
+<p>1.<br>将自建命令写于bin目录下<br>2.<br>shell有四种模式<br>ssh -t 及不带-t的区别</p>
+<p>3.<br>后台运行   ./api    &amp;<br>4.<br>杀死僵死进程   fg</p>
+<h2 id="脚本编写">脚本编写</h2><hr>
+<ol>
+<li>shell函数参数 dollar1 dollar2 dollar3</li>
+<li>多用shell swtich，少写些文件</li>
+<li>apply一行命令:dollar()<br>如 cd 进 which 所在目录<br>cd dollar(dirname dollar(which raco))</li>
+</ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/make指南/" itemprop="url">
+                make指南
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="tricks">tricks</h2><p>1.调试<br>可以通过打印变量来调试 @echo “var: “ $(var)</p>
+<h2 id="syntax">syntax</h2><ol>
+<li><p>target:$@</p>
+</li>
+<li><p>占位符：%</p>
+</li>
+<li><p>函数<br>BASE_SRCS += $(wildcard $(SRC_DIR)/*.cpp)<br>MAIN_SRCS = $(patsubst %,./%.cc,$(OBJECT))<br>FUNC_SRCS = $(filter-out $(MAIN_SRCS),$(BASE_SRCS))<br>FUNC_OBJS = $(patsubst %.cc,%.o,$(FUNC_SRCS))</p>
+</li>
+</ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/小而美的redis之dynamic string/" itemprop="url">
+                小而美的redis之dynamic_string
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p><a href="http://redisbook.readthedocs.org/en/latest/internal-datastruct/sds.html" target="_blank" rel="external">redis设计与实现-简单动态字符串</a></p>
+<h3 id="1-_背景">1. 背景</h3><p>c中string查询字符串长度代价为O（n），append字符需重新分配内存</p>
+<p>redis中存在大量查询长度，append字符操作</p>
+<h3 id="2-_目的">2. 目的</h3><p>构造redis内部新的string类型</p>
+<p>以O（1）复杂度查询字符串长度</p>
+<p>append分配内存进行优化</p>
+<h3 id="3-实现方式">3.实现方式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> * sds;</span><br><span class="line"><span class="keyword">struct</span> sdshdr&#123;</span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init,size_t initlen)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh;</span><br><span class="line">    sh = zmalloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+initlen+<span class="number">1</span>);</span><br><span class="line">    sh-&gt;len=initlen;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(sh-&gt;buf,init,initlen);</span><br><span class="line">    <span class="keyword">return</span>  (<span class="keyword">char</span>*) sh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> size_t <span class="title">sdavail</span><span class="params">(<span class="keyword">const</span> sds s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh=(<span class="keyword">void</span> *)(s - (<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)))</span><br><span class="line">    <span class="keyword">return</span> sh-&gt;<span class="built_in">free</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*enlarge space（double what we need）</span><br><span class="line"> *note:this does not change the length of sds string</span><br><span class="line"> */</span></span><br><span class="line"><span class="function">sds <span class="title">sdsMakeRoomFor</span><span class="params">(sds s,size_T addlen)</span></span>&#123;</span><br><span class="line">    strucrt sdshdr *sh,*newsh;</span><br><span class="line">    <span class="keyword">size_t</span> <span class="built_in">free</span>=sdavail(s);</span><br><span class="line">    <span class="keyword">size_t</span> len=sdslen(s);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">free</span>&gt;=addlen)</span><br><span class="line">        <span class="keyword">return</span> s;</span><br><span class="line">    newlen=len+addlen;</span><br><span class="line">    <span class="keyword">if</span>(newlen&lt;SDS_MAX_PREALLOC)</span><br><span class="line">        newlen *=<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        newlen=SDS_MAX_PREALLOC;</span><br><span class="line">    newsh=zrealloc(sh,<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+newlen+<span class="number">1</span>);</span><br><span class="line">    newsh-&gt;len=len;</span><br><span class="line">    newsh-&gt;<span class="built_in">free</span>=newlen-len;</span><br><span class="line">    <span class="keyword">return</span> newsh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//copy count len bytes of string pointed by pointer t to sds s</span></span><br><span class="line"><span class="function">sds <span class="title">sdscpylen</span><span class="params">(sds s,<span class="keyword">const</span> <span class="keyword">char</span> *t,size_t len)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshrd *sh=(<span class="keyword">void</span> *) (s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshrdr)));</span><br><span class="line">    <span class="keyword">size_t</span> totlen=sh-&gt;<span class="built_in">free</span> + sh-&gt;len;</span><br><span class="line">    <span class="keyword">if</span>(totlen &lt; len)&#123;</span><br><span class="line">        s=sdsMakeRoomFor(s,len-sh-&gt;len);</span><br><span class="line">        sh=(<span class="keyword">void</span> *)(s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)));</span><br><span class="line">        totlen=sh-&gt;<span class="built_in">free</span>+sh-&gt;len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">memcpy</span>(s,t,len);</span><br><span class="line">    sh-&gt;len=len;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=totlen=len;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-_感想">4. 感想</h3><ul>
+<li>深入了解调查业务需求。设计恰到好处的元数据结构以改善性能/改善代码结构</li>
+</ul>
+<hr>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/git指南/" itemprop="url">
+                git 指南
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>##github相关</p>
+<ol>
+<li>403 fatal: HTTP request failed解决方法：<br>修改 .git/config 为<a href="https://wenduo@github.com" target="_blank" rel="external">https://wenduo@github.com</a>……..</li>
+</ol>
+<hr>
+<p>##git 拉取</p>
+<ol>
+<li>拉取某个远程分支到本地，同时本地分支直接push到远端<br>git checkout -b branch origin/branch</li>
+</ol>
+<hr>
+<p>##git 创建</p>
+<ol>
+<li><p>想直接要git的某一个tag<br>git checkout tags/riak-1.4.2 -b tag1.4</p>
+</li>
+<li><p>在github上面, 想在dev上面连接上github, 要在github配置一下你再dev的id_rsa.pub就可以了. 然后就可以当用户提交了. 这样只要建立一个项目, 就可以随时的提交了</p>
+</li>
+<li><p>git的config git config —-list 就可以了</p>
+</li>
+<li><p>git rm –cached filename<br>这个git 把已经提交上去的文件删除掉</p>
+</li>
+<li><p>git config –global core.excludesfile ~/.gitignore_global<br>然后这样就可以配置全局的gitignore</p>
+</li>
+<li><p>git stash 就可以把当前的提交放在stash里面, 这个时候你的分支下面所有的东西就存起来, 变成线上的分支情况了. 什么时候 然后想要的时候再git stash pop 出来就可以了</p>
+</li>
+<li><p>git stash 完以后, git stash branch multiGet, 把stash里面的代码生成出multiGet分支. 然后你在multiGet里面commit 以后, 再checkout回 master 就可以了</p>
+</li>
+<li><p>git 回退到历史版本.<br>git reset 72066610b8f78e042091d762606c4fdca431c028<br>所以一个回退到历史版本, 然后把线上这个版本放在一个分支的操作流程是 先git reset 到某一个版本, 然后git stash, 然后 git stash branch multiGet(这里建立一个分支) ; git commit (提交到本地分支). 然后 checkout master. 然后直接git push -f origin master 就可以覆盖线上的了.</p>
+</li>
+<li><p>git checkout local/proxy.ini 就可以将本地的修改给去掉了. 相当于svn revert了</p>
+</li>
+<li><p>git config –global color.ui auto</p>
+</li>
+<li><p>git config –global alias.st status</p>
+</li>
+<li><p>把线上的某一个branch 直接拉下来在本地开发, 以后pull push 就对应线上的这个branch了<br>git checkout -b 2.0 origin/2.0<br>这里就是把线上的 2.0 版本拉下来, 在本地直接建立一个2.0的分支</p>
+</li>
+<li><p>强调一下 把线上的某一个分支拉下来开发 git checkout -b experimental origin/experimental</p>
+</li>
+<li><p>git ignore 某一个项目的.gitignore. 修改.git/info/exclude 这个项目下面的这个文件即可</p>
+</li>
+</ol>
+<p>15.git tag -a 1.5.1 d087e24f699badca8dd399b7ee8e5ea7619011c3 -m “1.5.1 tag”<br>checkout 某一个tag 的方法 git checkout -b 1.6.6 tags/1.6.6<br>添加一个以某一个版本为基础的叫1.5.1的tag<br>git push origin –tags<br>将这个tag添加到远程分支<br>删除tag 的方法<br>先在本地 git tag -d tag_name<br>然后 git push origin :refs/tags/tag_name<br>这样就把本地和远程的tag_name 这个tag 都删除掉了</p>
+<p>git fetch –tags 更新拉取线上最新的tags</p>
+<ol>
+<li><p>git 把多次的提交merge 成一个, 在master merge branch的时候<br>git merge –squash develop<br>这样在提交的时候develop上面所有的提交就变成一次提交</p>
+</li>
+<li><p>git reset HEAD local/proxy.ini 这句话把提交到本地的cached里面的文件重新拉回本地未提交区域</p>
+</li>
+<li><p>修改最后一次提交的注释信息<br>git commit –amend 然后可以具体写修改的注释</p>
+</li>
+<li><p>git 删除远程上面的某个分支的办法<br>git push origin :mario 这里就把 remotes/origin/mario 这个分支给删除掉了</p>
+</li>
+<li><p>当 git pull 的时候加入本地有很多东西没有加上去, 而你又不想要了. 那么就可以清除掉<br>error: The following untracked working tree files would be overwritten</p>
+</li>
+</ol>
+<p>解决方法 git clean -d -fx “”</p>
+<ol>
+<li><p>git 把本地的多次提交变成一次提交<br>git reset –soft HEAD~3 &amp;&amp;<br>git commit</p>
+</li>
+<li><p>git 忽略文件的权限<br>git ignore file permission<br>git config core.filemode false</p>
+</li>
+<li><p>git 将多次提交合并成一次提交, 在已经提交以后的方法<br>git diff master &gt; ~/a; git checkout master; git checkout -b pull_request; git apply ~/a; git commit -a -m “Pull Request”</p>
+</li>
+<li><p>git 碰到 unmerged 的时候, 不想要处理这些冲突的时候, 直接git reset 这些文件就可以</p>
+</li>
+<li><p>当遇到冲突并且你已经pull 的时候, 可以用这个 git-reflog 这个命令找出你merge 之前的版本.<br>然后强行的 git reset –hard dd659b7(版本号) 就可以了</p>
+</li>
+<li><p>git submodule</p>
+</li>
+</ol>
+<p>git submodule add <a href="https://github.com/chaconinc/DbConnector" target="_blank" rel="external">https://github.com/chaconinc/DbConnector</a></p>
+<p>git submodule add git@github.com:baotiao/pink.git ./third/pink<br>添加到指定目录</p>
+<p><a href="http://git-scm.com/book/en/v2/Git-Tools-Submodules" target="_blank" rel="external">http://git-scm.com/book/en/v2/Git-Tools-Submodules</a></p>
+<ol>
+<li>git clean -dxf<br>git在进行branch 切换的时候, 需要考虑到原分支下面还有一些未删除的多余信息, 所以要clean 一下</li>
+</ol>
+<p>分支操作：<br>删除本地分支：<br>  git tag -d 标签名<br>删除远程分支：<br>   git push origin :refs/tags/标签名  </p>
+<p>创建本地分支：<br>   git tag 标签名git push origin :refs/tags/标签名<br>推送到远端：<br>    git push origin 标签名  </p>
+<p>Git show </p>
+<p>##git stash</p>
+<ol>
+<li>git stash list</li>
+<li>git stash applyç</li>
+</ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/vim 使用/" itemprop="url">
+                vim使用
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>##常用</p>
+<ul>
+<li>调整格式：选中后 =<br>##跳转<br>##列编辑<br>列插入 ：ctrl+v shift+i<br>##命令模式</li>
+<li>% 代表全文 ，比如:%d</li>
+<li>全文替换 [addr]s/源字符串/目的字符串/[option]<br>eg: 1. %s/old/new/gc </li>
+<li>复制指定行： a,b y</li>
+</ul>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/protobuf/" itemprop="url">
+                protobuf
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="常见错误：">常见错误：</h2><ol>
+<li>解析错误：parsefromstring 传入char*<br>被\0 截断。应该改为parsefromarray,或先转换为string</li>
+</ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/tmux使用/" itemprop="url">
+                tmux使用
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p><a href="http://mindonmind.github.io/notes/linux/tmux.html" target="_blank" rel="external">tmux使用笔记</a></p>
+<h3 id="1-_会话">1. 会话</h3><p>列出所有会话：prefix s<br>进入新会话：tmux new-session -s session_name<br>退出会话： prefix d<br>重新进入旧会话：tmux attach session_name<br>删除会话：tmux kill-session -t session-name</p>
+<h3 id="2-_窗口">2. 窗口</h3><p>列出所有窗口 prefix w<br>选择窗口 prefix num<br>新建窗口 prefix c<br>重命名窗口 prefix ,<br>删除窗口 prefix &amp;</p>
+<h3 id="3-_面板">3. 面板</h3><p>增加竖面板 prefix %<br>增加横面板 prefix “<br>删除面板 prefix x<br>面板提升为窗口 prefix ！</p>
+<h3 id="4-_设置">4. 设置</h3><p>conf文件在 ~/.tmux.conf中<br>更改初始索引：set -g base-index 1<br>更改快捷键 ：set -g prefix C-a<br>窗口名不变化：set-option -g allow-rename off<br>使配置生效：source-file ~/.tmux.conf</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2014/08/01/代码大全/" itemprop="url">
+                代码大全
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2014-08-01T15:30:16+08:00" content="2014-08-01">
+            2014-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><blockquote>
+<p>按照读书顺序整理<br>此版为草稿</p>
+</blockquote>
+<hr>
+<hr>
+<h1 id="第二部分：高质量代码">第二部分：高质量代码</h1><h2 id="第六章：可工作的类">第六章：可工作的类</h2><h4 id="a-好处">a.好处</h4><blockquote>
+<p>提高程序自说明性<br>隐藏细节<br>隔离复杂度<br>流畅的参数传递<br>容易重构<br>…</p>
+</blockquote>
+<p>public下实质就是对外开放的接口，而private则是封装的细节</p>
+<p>#####ADT：应采用尽可能高的抽象</p>
+<h4 id="b-接口设计原则">b.接口设计原则</h4><blockquote>
+<p>1.一个类只实现一个ADT，内聚性要高。对类内杂乱的函数：</p>
+<blockquote>
+<p>转移到其他类里，<br>转移为私用子函数</p>
+</blockquote>
+<p>2.使用一致的抽象层次，混乱的抽象会让程序难以理解：<br>事务层次的类不应该提供容器的操作窗口，<br>如果有操作需求，也应是事务概念的操作</p>
+<p>3.接口是对捕捉到的抽象进行选择，<br>4.检查是否存在相反操作需求<br>5.一半子程序使用一半数据，另一半子 程序使用另外一半数据，那么拆分类吧。<br>6.尽量把语义接口元素转化为编程接口元素。如使用断言等。</p>
+</blockquote>
+<p>总之，接口应该展示一致的抽象。</p>
+<h4 id="c-封装原则">c.封装原则</h4><p>对c++等语言代码中,不要在private部分暴露实现细节。<br>封装方法是<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> EmployImplymentation * m_implymenTation</span><br></pre></td></tr></table></figure></p>
+<p>而把细节放入implymentation类里。<br>至少读代码时别去私用部分里找细节</p>
+<h4 id="封装是对接口编程，而不是对内部实现细节编程。">封装是对接口编程，而不是对内部实现细节编程。</h4><h5 id="封装的思维:">封装的思维:</h5><p>如果一个人调用库时发现问题，不应该查阅源代码，而是联系作者去修改发布。类内实现细节不应该影响使用者编程。如：</p>
+<blockquote>
+<p>逻辑过程缺失：perform内包含initial，没读细节的使用者先initial再perform就会出bug</p>
+<p>假设过强：使用classA.num代替classB.num.客户不知道他们两个的num相同。</p>
+</blockquote>
+<p><em>紧密耦合事实上消除了封装性。</em></p>
+<h4 id="e-继承">e.继承</h4><ol>
+<li>种类：</li>
+</ol>
+<ul>
+<li><p>公有：<code>class a:public class baseClass;</code></p>
+<blockquote>
+<p>1.baseClass中public元素在a中还是public，base中private元素在a中不可见<br>2.代表 is a 关系</p>
+</blockquote>
+</li>
+<li><p>私有：<code>class b:public class base</code></p>
+<blockquote>
+<p>1.base中public元素在b中是private，base中private不可见</p>
+</blockquote>
+</li>
+</ul>
+<ol>
+<li>何时选择继承：<blockquote>
+<p>1.多个类的共有元素需要一个基类去集中<br>2.派生类必须能够通过基类的接口直接调用</p>
+</blockquote>
+</li>
+<li><p>LSP原则：使用时无须思考不同派生类的语义含义，即基类提供之接口让人直接理解派生类的行为如：</p>
+<blockquote>
+<p>loanAccount的interest和saveAccount中interest中语义不同，就不应在基类account中放入interest元素，interest的继承并没有减少程序员的思考量</p>
+</blockquote>
+</li>
+<li><p>不要过度设计。为未来工作着想的方式是让眼下之成果尽可能清晰简单。—只有一个派生类的继承很值得怀疑</p>
+</li>
+<li>case语句下多操作都很类似暗示着多态的需求。<br>而种类确实不同的操作则不必。</li>
+<li><p>继承体系尽可能低</p>
+</li>
+<li><p>几点注意事项：<br>1.避免万能类，应该把功能放入万能类他所操作的类上去。<br>2.避免动词命名的类：只有动作而无数据的类只应该是其他类的子程序。<br>####在软件的历史中，粒度的增长带来软件开发的进步。语句-子程序-类-包等。</p>
+</li>
+</ol>
+<hr>
+<h3 id="第七章：高质量子程序">第七章：高质量子程序</h3><h4 id="1-子程序作用">1.子程序作用</h4><p>1.子程序名提供逻辑抽象解释<br>2.避免重复代码<br>3.封装事务过程<br>…….</p>
+<h4 id="2-设计">2.设计</h4><p>内聚性：<br>&gt;<br>功能内聚性：只完成一个功能<br>顺序内聚性：顺序执行的操作由上一步ans求下一步<br>通信内聚性：操作共享数据但无其他联系<br>临时内聚    ：startup()等，不相关的操作组合在一起<br>逻辑内聚：通过传入的控制字段选择不同操作。如<br>inputAll（type）</p>
+<p>对逻辑内聚：</p>
+<blockquote>
+<p>  不应该用一个程序控制另外一个程序的处理方式。<br>     应把程序分为几个平行程序在上层调用。若有相似的底层操作，则封装成底层函数。<br>     但如程序仅为if/case之内选择不同函数，就成了常用的事件处理器。</p>
+</blockquote>
+<h4 id="3-函数命名">3.函数命名</h4><blockquote>
+<p>避免使用含糊的词 如：HandleOutput-&gt;FormatAndPrint</p>
+<p>找不到准确的词说明子程序可能需要修改</p>
+<p>描述程序做的所有事 ：一个动宾结构，object.function()则不必<br>   或者描述程序的返回值</p>
+<p>一个恰如其份但是糟糕的函数名说明需要重新设计</p>
+</blockquote>
+<p>子程序长度一般应少于200行</p>
+<h4 id="4-_参数">4. 参数</h4><blockquote>
+<p>1.接口参数按一定顺序排列，如：修改-输入-输出型参数<br>        考虑命名规则<br>   2.使用自己函数定义的工作变量,如:<br>  <code>int  workingVal=inputVal
+ workingVal.......
+//注意这两个变量命名是很差的</code><br>3.尽量采用const关键字<br>4.以断言或注释解释参数的操作类型数值范围等<br>5.参数过多说明耦合紧密。人脑很难记住超过7个单词<br>7.确保形参实参一致<br>8.传递数据成员还是对象：<br>–取决于抽象</p>
+</blockquote>
+<p>######函数不要返回局部变量 </p>
+<h4 id="5-_宏程序">5. 宏程序</h4><blockquote>
+<p>1.参数要套括号==<br>2.整个表达式外要套括号<br>3.多条语句外套{}<br>4.除非必要，还是不要用了吧…</p>
+</blockquote>
+<hr>
+<h1 id="第六部分：变量">第六部分：变量</h1><p>代码被阅读的时间远远大于编写的时间，确保代码阅读方便。</p>
+<h2 id="一般事项">一般事项</h2><p>1.显式声明，初始化<br>2.就近声明和初始化<br>3.让变量的跨度和存活时间尽可能短以减少攻击窗口。（尽量不使用全局变量)<br> 把相关的语句放在一起<br>提取语句成为单独的子程序<br>4.抛弃变量时赋不合理的NULL值<br>5.变量晚绑定值可以获得灵活性（使用具名变量）<br>6.单个变量只用于单一用途<br>7.检查是否有未使用的已声明变量</p>
+<h2 id="变量命名">变量命名</h2><p>1.8到16个字符<br>2.体现问题而非解决方案<br>3.一致的命名变量。<br>如revenueTotal—expenseAverage<br>例外numCustomers<br>4.采用对仗词如old-new，source-target<br>5.用比i，j，k更具意义的词为大循环或多重循环的循环变量命名<br>6.temp说明程序员并没有完全的搞懂问题。<br>7.done，found,error等布尔变量。<br>8.枚举类型使用组前缀。</p>
+<blockquote>
+<p>######一.命名规则<br>1.命名规则为代码增加了结构，是一项全局决策。<br>2.用g_标识全局变量<br>3.变量首字母小写，函数首字母大写。</p>
+</blockquote>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+  </section>
+
+  
+  <nav class="pagination">
+    <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+  </nav>
+
+ </div>
+
+        
+
+        
+      </div>
+
+      
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      <section class="site-overview">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" src="/images/default_avatar.jpg" alt="wenduo" itemprop="image"/>
+          <p class="site-author-name" itemprop="name">wenduo</p>
+        </div>
+        <p class="site-description motion-element" itemprop="description"></p>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-name">文章</span>
+            </a>
+          </div>
+
+          <div class="site-state-item site-state-categories">
+            
+              <span class="site-state-item-count">0</span>
+              <span class="site-state-item-name">分類</span>
+              
+          </div>
+
+          <div class="site-state-item site-state-tags">
+            <a href="/tags">
+              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-name">標籤</span>
+              </a>
+          </div>
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+      </section>
+
+      
+
+    </div>
+  </aside>
+
+
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner"> <div class="copyright" >
+  
+  &copy; &nbsp; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="icon-next-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wenduo</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="http://hexo.io">Hexo</a> 強力驅動
+</div>
+
+<div class="theme-info">
+  主題 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT
+  </a>
+</div>
+
+
+ </div>
+    </footer>
+
+    <div class="back-to-top"></div>
+  </div>
+
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  
+  
+    
+    
+
+  
+
+
+  
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js"></script>
+  <script type="text/javascript" src="/js/fancy-box.js?v=0.4.5.1"></script>
+
+
+  <script type="text/javascript" src="/js/helpers.js?v=0.4.5.1"></script>
+  
+
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js"></script>
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js"></script>
+
+  <script type="text/javascript" src="/js/motion_global.js?v=0.4.5.1" id="motion.global"></script>
+
+
+
+
+  <script type="text/javascript" src="/js/nav-toggle.js?v=0.4.5.1"></script>
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+
+  <script type="text/javascript">
+    $(document).ready(function () {
+      if (CONFIG.sidebar === 'always') {
+        displaySidebar();
+      }
+      if (isMobile()) {
+        FastClick.attach(document.body);
+      }
+    });
+  </script>
+
+  
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/lazyload.js"></script>
+  <script type="text/javascript">
+    $(function () {
+      $("#posts").find('img').lazyload({
+        placeholder: "/images/loading.gif",
+        effect: "fadeIn"
+      });
+    });
+  </script>
+</body>
+</html>
