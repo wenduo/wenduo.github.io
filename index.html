@@ -158,110 +158,6 @@
           
           
             
-              <a class="post-title-link" href="/2016/08/17/设计模式/" itemprop="url">
-                未命名
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2016-08-17T16:02:25+08:00" content="2016-08-17">
-            2016-08-17
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p>title: 设计模式</p>
-<h1 id="设计模式">设计模式</h1><p>tags: 读书笔记<br>date: 2014-8-01 15:30:16</p>
-<h3 id="一-singleton:单例模式">一.singleton:单例模式</h3><p>(<a href="http://www.cnblogs.com/rush/archive/2011/10/30/2229565.html" target="_blank" rel="external">http://www.cnblogs.com/rush/archive/2011/10/30/2229565.html</a>)</p>
-<p>1.<em>单线程实现</em></p>
-<blockquote>
-<p>私有化构造函数<br>私有保存一个自己的instance<br>用public static getInstance 判断创建实例<br>用singleton.getInstance()取</p>
-</blockquote>
-<p>2.<em>多线程下双重检查</em></p>
-<blockquote>
-<p><code>if (singleton== null)     {   
-            synchronized (Singleton.class)   
-            {   
-                if (singleton== null)   
-                {   
-                    singleton= new Singleton();   
-                }   
-            }   
-        }</code></p>
-</blockquote>
-<hr>
-<p>###二.IOC:依赖注入</p>
-<hr>
-<p><em>依赖</em>    ：       调用者创建被调用者实例<br> <em>依赖注入</em>：   容器创建实例并注入调用者</p>
-<hr>
-<p>#####<em>材料</em><br><a href="http://www.cnblogs.com/leoo2sk/archive/2009/06/17/1504693.html" target="_blank" rel="external">依赖注入那些事-张洋</a></p>
-<blockquote>
-<p><em>ocp原则：</em>对扩展开放，对修改关闭<br><em>面向对象设计原则：</em>明确划分职责<br><em>多态.接口之实质：</em>把逻辑上变化和不变的部分隔离开</p>
-</blockquote>
-<hr>
-<p>#####<em>原理</em><br>类型1.客户类A定义注入点。其他程序实例化服务类并注入A。 </p>
-<blockquote>
-<p>setter/construction injection：客户类设置服务类数据成员,set函数或构造函数作为注入点。</p>
-</blockquote>
-<p>类型2.系统提供一个factory模式的获取点。客户类需要时自己获取。</p>
-<hr>
-<p>###<em>三.工厂模式</em></p>
-<hr>
-<p>#####<em>材料</em></p>
-<blockquote>
-<p>《大话设计模式》</p>
-<hr>
-</blockquote>
-<p>#####**<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a</p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
               <a class="post-title-link" href="/2016/08/16/php相关/" itemprop="url">
                 php相关
               </a>
@@ -595,280 +491,6 @@
           
           
             
-              <a class="post-title-link" href="/2016/05/01/linux命令之磁盘/" itemprop="url">
-                linux命令之磁盘
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
-            2016-05-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h3 id="磁盘监控">磁盘监控</h3><p>a. vmstat</p>
-<p>vmstat时iowait是什么意思？</p>
-<blockquote>
-<p>每次clock定时中断上cpu后，统计之前cpu状态，用户态则user加1，内核态则sys加1，idle且无io等待则idle加1，idle且有io等待则iowait加1。可见iowait可以用来判断cpu是否是瓶颈，低iowait说明cpu一定不是瓶颈。而用iowait看磁盘瓶颈则不太靠谱。</p>
-</blockquote>
-<p>b. iostat :iostat -x 1</p>
-<ul>
-<li><p>iostat的util是什么意思？<br>每次tick采样，device 在进行io操作的比例</p>
-</li>
-<li><p>iostat的await，svim什么意思？<br>每次io操作，现在队列等待，然后进行操作，操作时间svim，总时间为await </p>
-</li>
-</ul>
-<p>因此util高负载不一定很高，因为并行的缘故，衡量device忙碌程度一般用svim靠谱点<br>iostat</p>
-<p>c. 查看磁盘型号<br>smartctl –all /dev/sdb</p>
-<p>d. 关闭磁盘设备 cache<br> sudo hdparm -W 0 /dev/hda</p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2016/05/01/c interface and implementation/" itemprop="url">
-                c-interface-and-implementation
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
-            2016-05-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h2 id="idioms:">idioms:</h2><ol>
-<li>c 标准库保留 _var 用于内部实现及未来扩展，所以不要使用_var 命令</li>
-</ol>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2016/05/01/linux命令之运维/" itemprop="url">
-                linux命令之运维
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
-            2016-05-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h1 id="1-增加用户：">1.增加用户：</h1><p>##先切换到root账户，然后</p>
-<blockquote>
-<p>sudo useradd -m wangwenduo<br>sudo passwd wangwenduo<br>增加sudo权限：<br>chmod u+w /etc/sudoers<br>vim /etc/sudoers<br>chmod u-x /etc/sudoers</p>
-</blockquote>
-<h1 id="拷贝">拷贝</h1><p>###1. rsync</p>
-<ul>
-<li>限流<br>rsync -auvzP –delete –bwlimit=80000 src dest</li>
-<li>-u :本地时间戳更新的文件不动，无-u则覆盖所有文件</li>
-<li>拷贝top-level下的某些子目录 -include=”/1” -exclude=’/*’</li>
-<li>根据file指定跳过、包含目录<br>–include-from=”file”</li>
-</ul>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2016/05/01/ceph crush算法/" itemprop="url">
-                crush算法介绍
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
-            2016-05-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h2 id="crush算法背景">crush算法背景</h2><p>一个分布式存储系统包含大量的设备，每次io，我们都需要从几百台设备中选出一个设备集合，存放对应的数据。那么数据分布的策略，有下面几点应该考虑：设备的压力均衡，设备变动数据的迁移，容灾，client端如何访问对应数据。<br>数据分布算法，本质是一个数据x到设备集合x的映射。我们熟知的cassandra通过一致性hash算法进行数据分片。</p>
-<h2 id="crush想解决的问题">crush想解决的问题</h2><h2 id="crush的流程与实现">crush的流程与实现</h2><h2 id="crush与一致性hash的比较">crush与一致性hash的比较</h2><h2 id="crush_tunable">crush tunable</h2></span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
               <a class="post-title-link" href="/2016/05/01/ceph 基本介绍/" itemprop="url">
                 ceph基本介绍
               </a>
@@ -1042,6 +664,348 @@
 <li>sudo ceph auth add client.radosgw.gateway –in-file=keyring.radosgw.gateway</li>
 </ol>
 <p>4.sudo radosgw -n client.radosgw.gateway -c /etc/ceph/ceph.conf -f –log-to -stderr –debug-rgw=20 –debug-ms=1<br>5.sudo radosgw-admin user create –uid=”testuser” –display-name=”First User”<br>6.拷 keyring 到客户机</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2016/05/01/linux命令之磁盘/" itemprop="url">
+                linux命令之磁盘
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
+            2016-05-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h3 id="磁盘监控">磁盘监控</h3><p>a. vmstat</p>
+<p>vmstat时iowait是什么意思？</p>
+<blockquote>
+<p>每次clock定时中断上cpu后，统计之前cpu状态，用户态则user加1，内核态则sys加1，idle且无io等待则idle加1，idle且有io等待则iowait加1。可见iowait可以用来判断cpu是否是瓶颈，低iowait说明cpu一定不是瓶颈。而用iowait看磁盘瓶颈则不太靠谱。</p>
+</blockquote>
+<p>b. iostat :iostat -x 1</p>
+<ul>
+<li><p>iostat的util是什么意思？<br>每次tick采样，device 在进行io操作的比例</p>
+</li>
+<li><p>iostat的await，svim什么意思？<br>每次io操作，现在队列等待，然后进行操作，操作时间svim，总时间为await </p>
+</li>
+</ul>
+<p>因此util高负载不一定很高，因为并行的缘故，衡量device忙碌程度一般用svim靠谱点<br>iostat</p>
+<p>c. 查看磁盘型号<br>smartctl –all /dev/sdb</p>
+<p>d. 关闭磁盘设备 cache<br> sudo hdparm -W 0 /dev/hda</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2016/05/01/ceph crush算法/" itemprop="url">
+                crush算法介绍
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
+            2016-05-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="crush算法背景">crush算法背景</h2><p>一个分布式存储系统包含大量的设备，每次io，我们都需要从几百台设备中选出一个设备集合，存放对应的数据。那么数据分布的策略，有下面几点应该考虑：设备的压力均衡，设备变动数据的迁移，容灾，client端如何访问对应数据。<br>数据分布算法，本质是一个数据x到设备集合x的映射。我们熟知的cassandra通过一致性hash算法进行数据分片。</p>
+<h2 id="crush想解决的问题">crush想解决的问题</h2><h2 id="crush的流程与实现">crush的流程与实现</h2><h2 id="crush与一致性hash的比较">crush与一致性hash的比较</h2><h2 id="crush_tunable">crush tunable</h2></span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2016/05/01/c interface and implementation/" itemprop="url">
+                c-interface-and-implementation
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
+            2016-05-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="idioms:">idioms:</h2><ol>
+<li>c 标准库保留 _var 用于内部实现及未来扩展，所以不要使用_var 命令</li>
+</ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2016/05/01/linux命令之运维/" itemprop="url">
+                linux命令之运维
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-05-01T15:30:16+08:00" content="2016-05-01">
+            2016-05-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h1 id="1-增加用户：">1.增加用户：</h1><p>##先切换到root账户，然后</p>
+<blockquote>
+<p>sudo useradd -m wangwenduo<br>sudo passwd wangwenduo<br>增加sudo权限：<br>chmod u+w /etc/sudoers<br>vim /etc/sudoers<br>chmod u-x /etc/sudoers</p>
+</blockquote>
+<h1 id="拷贝">拷贝</h1><p>###1. rsync</p>
+<ul>
+<li>限流<br>rsync -auvzP –delete –bwlimit=80000 src dest</li>
+<li>-u :本地时间戳更新的文件不动，无-u则覆盖所有文件</li>
+<li>拷贝top-level下的某些子目录 -include=”/1” -exclude=’/*’</li>
+<li>根据file指定跳过、包含目录<br>–include-from=”file”</li>
+</ul>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2016/03/01/网络与socket/" itemprop="url">
+                网络与socket
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-03-01T15:30:16+08:00" content="2016-03-01">
+            2016-03-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>##一.socket<br>socket是对通信端口点的抽象</p>
+<p>##二. tcp (transmission control protocol)</p>
+<p>###1. 网络字节序</p>
+<p>####a. int a= 0x12345678;<br>在小端模式下  79 56 34 12<br>在大端模式下  12 34 56 78</p>
+<p>####b. tcp/ip采用大端，称为网络字节序</p>
+<p>####c. 转换函数 ntohl :network to host long</p>
+<p>##三.tcp 与 udp的区别<br>udp:自包含报文，不保证送达不保证时序</p>
 </span>
         
       

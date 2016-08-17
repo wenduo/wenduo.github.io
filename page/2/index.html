@@ -240,74 +240,6 @@
           
           
             
-              <a class="post-title-link" href="/2016/03/01/网络与socket/" itemprop="url">
-                网络与socket
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2016-03-01T15:30:16+08:00" content="2016-03-01">
-            2016-03-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p>##一.socket<br>socket是对通信端口点的抽象</p>
-<p>##二. tcp (transmission control protocol)</p>
-<p>###1. 网络字节序</p>
-<p>####a. int a= 0x12345678;<br>在小端模式下  79 56 34 12<br>在大端模式下  12 34 56 78</p>
-<p>####b. tcp/ip采用大端，称为网络字节序</p>
-<p>####c. 转换函数 ntohl :network to host long</p>
-<p>##三.tcp 与 udp的区别<br>udp:自包含报文，不保证送达不保证时序</p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
               <a class="post-title-link" href="/2016/03/01/linux命令之待整理/" itemprop="url">
                 linux命令之待整理
               </a>
@@ -699,6 +631,76 @@
           
           
             
+              <a class="post-title-link" href="/2015/11/01/c之函数指针/" itemprop="url">
+                c之函数指针
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-11-01T15:30:16+08:00" content="2015-11-01">
+            2015-11-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>函数的本质是表达式的抽象，是堆栈中的一段程序指令</p>
+<ul>
+<li>可以通过函数指针实现接口</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">add</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a+b;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">minus</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a-b;&#125;; </span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">multiply</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a*b;&#125;; </span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">divide</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a/b;&#125; ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">float</span> （*fp）(<span class="keyword">float</span> a,<span class="keyword">float</span> b);</span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">callee</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b,fp p)</span></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> result=<span class="number">0.0</span>;</span><br><span class="line">    result=p(a,b);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">caller</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> result;</span><br><span class="line">    result=callee(<span class="number">1</span>,<span class="number">2</span>,add);</span><br><span class="line">    result=callee(<span class="number">3</span>,<span class="number">5</span>,minus);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过函数指针实现类<br>下文中，aeFileEvent类中包含rfileProc接口。initServer中可为其注册回调函数。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ae.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> aeFileEvent&#123;</span><br><span class="line">    <span class="keyword">int</span> mask;</span><br><span class="line">    aeFileProc *rfileProc;</span><br><span class="line">    aeFileProc * wfileProc;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="keyword">void</span> <span class="title">aeFileProc</span><span class="params">(<span class="keyword">struct</span> aeEventLoop *eventLoop, <span class="keyword">int</span> fd, <span class="keyword">void</span> *clientData, <span class="keyword">int</span> mask)</span></span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//redis.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initServer</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(j = <span class="number">0</span>; j &lt; server.ipfd_count; j++)&#123;</span><br><span class="line">        aeCreateFileEvent(server.el, server.ipfd[j], AE_READABLE, acceptTcpHandler,<span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//networking.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acceptTcpHandler</span><span class="params">(aeEventLoop *el, <span class="keyword">int</span> fd, <span class="keyword">void</span> *privdata, <span class="keyword">int</span> mask)</span></span>&#123;</span><br><span class="line">    <span class="comment">//logic here;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/11/01/分布式数据库之 mnesia 简介/" itemprop="url">
                 分布式数据库mnesia基本介绍
               </a>
@@ -988,78 +990,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/11/01/c之函数指针/" itemprop="url">
-                c之函数指针
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-11-01T15:30:16+08:00" content="2015-11-01">
-            2015-11-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p>函数的本质是表达式的抽象，是堆栈中的一段程序指令</p>
-<ul>
-<li>可以通过函数指针实现接口</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">add</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a+b;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">minus</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a-b;&#125;; </span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">multiply</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a*b;&#125;; </span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">divide</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a/b;&#125; ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">float</span> （*fp）(<span class="keyword">float</span> a,<span class="keyword">float</span> b);</span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">callee</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b,fp p)</span></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> result=<span class="number">0.0</span>;</span><br><span class="line">    result=p(a,b);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">caller</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> result;</span><br><span class="line">    result=callee(<span class="number">1</span>,<span class="number">2</span>,add);</span><br><span class="line">    result=callee(<span class="number">3</span>,<span class="number">5</span>,minus);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li>通过函数指针实现类<br>下文中，aeFileEvent类中包含rfileProc接口。initServer中可为其注册回调函数。</li>
-</ul>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ae.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> aeFileEvent&#123;</span><br><span class="line">    <span class="keyword">int</span> mask;</span><br><span class="line">    aeFileProc *rfileProc;</span><br><span class="line">    aeFileProc * wfileProc;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="keyword">void</span> <span class="title">aeFileProc</span><span class="params">(<span class="keyword">struct</span> aeEventLoop *eventLoop, <span class="keyword">int</span> fd, <span class="keyword">void</span> *clientData, <span class="keyword">int</span> mask)</span></span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//redis.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initServer</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(j = <span class="number">0</span>; j &lt; server.ipfd_count; j++)&#123;</span><br><span class="line">        aeCreateFileEvent(server.el, server.ipfd[j], AE_READABLE, acceptTcpHandler,<span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//networking.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acceptTcpHandler</span><span class="params">(aeEventLoop *el, <span class="keyword">int</span> fd, <span class="keyword">void</span> *privdata, <span class="keyword">int</span> mask)</span></span>&#123;</span><br><span class="line">    <span class="comment">//logic here;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/01/shell tricks/" itemprop="url">
-                shell使用
+              <a class="post-title-link" href="/2015/08/01/vim 使用/" itemprop="url">
+                vim使用
               </a>
             
           
@@ -1089,15 +1021,13 @@
 
       
         
-          <span itemprop="articleBody"><h2 id="tricks">tricks</h2><hr>
-<p>1.<br>将自建命令写于bin目录下<br>2.<br>shell有四种模式<br>ssh -t 及不带-t的区别</p>
-<p>3.<br>后台运行   ./api    &amp;<br>4.<br>杀死僵死进程   fg</p>
-<h2 id="脚本编写">脚本编写</h2><hr>
-<ol>
-<li>shell函数参数 dollar1 dollar2 dollar3</li>
-<li>多用shell swtich，少写些文件</li>
-<li>apply一行命令:dollar()<br>如 cd 进 which 所在目录<br>cd dollar(dirname dollar(which raco))</li>
-</ol>
+          <span itemprop="articleBody"><p>##常用</p>
+<ul>
+<li>调整格式：选中后 =<br>##跳转<br>##列编辑<br>列插入 ：ctrl+v shift+i<br>##命令模式</li>
+<li>% 代表全文 ，比如:%d</li>
+<li>全文替换 [addr]s/源字符串/目的字符串/[option]<br>eg: 1. %s/old/new/gc </li>
+<li>复制指定行： a,b y</li>
+</ul>
 </span>
         
       
@@ -1164,6 +1094,78 @@
 <h3 id="2-_窗口">2. 窗口</h3><p>列出所有窗口 prefix w<br>选择窗口 prefix num<br>新建窗口 prefix c<br>重命名窗口 prefix ,<br>删除窗口 prefix &amp;</p>
 <h3 id="3-_面板">3. 面板</h3><p>增加竖面板 prefix %<br>增加横面板 prefix “<br>删除面板 prefix x<br>面板提升为窗口 prefix ！</p>
 <h3 id="4-_设置">4. 设置</h3><p>conf文件在 ~/.tmux.conf中<br>更改初始索引：set -g base-index 1<br>更改快捷键 ：set -g prefix C-a<br>窗口名不变化：set-option -g allow-rename off<br>使配置生效：source-file ~/.tmux.conf</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/小而美的redis之dynamic string/" itemprop="url">
+                小而美的redis之dynamic_string
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p><a href="http://redisbook.readthedocs.org/en/latest/internal-datastruct/sds.html" target="_blank" rel="external">redis设计与实现-简单动态字符串</a></p>
+<h3 id="1-_背景">1. 背景</h3><p>c中string查询字符串长度代价为O（n），append字符需重新分配内存</p>
+<p>redis中存在大量查询长度，append字符操作</p>
+<h3 id="2-_目的">2. 目的</h3><p>构造redis内部新的string类型</p>
+<p>以O（1）复杂度查询字符串长度</p>
+<p>append分配内存进行优化</p>
+<h3 id="3-实现方式">3.实现方式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> * sds;</span><br><span class="line"><span class="keyword">struct</span> sdshdr&#123;</span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init,size_t initlen)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh;</span><br><span class="line">    sh = zmalloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+initlen+<span class="number">1</span>);</span><br><span class="line">    sh-&gt;len=initlen;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(sh-&gt;buf,init,initlen);</span><br><span class="line">    <span class="keyword">return</span>  (<span class="keyword">char</span>*) sh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> size_t <span class="title">sdavail</span><span class="params">(<span class="keyword">const</span> sds s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh=(<span class="keyword">void</span> *)(s - (<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)))</span><br><span class="line">    <span class="keyword">return</span> sh-&gt;<span class="built_in">free</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*enlarge space（double what we need）</span><br><span class="line"> *note:this does not change the length of sds string</span><br><span class="line"> */</span></span><br><span class="line"><span class="function">sds <span class="title">sdsMakeRoomFor</span><span class="params">(sds s,size_T addlen)</span></span>&#123;</span><br><span class="line">    strucrt sdshdr *sh,*newsh;</span><br><span class="line">    <span class="keyword">size_t</span> <span class="built_in">free</span>=sdavail(s);</span><br><span class="line">    <span class="keyword">size_t</span> len=sdslen(s);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">free</span>&gt;=addlen)</span><br><span class="line">        <span class="keyword">return</span> s;</span><br><span class="line">    newlen=len+addlen;</span><br><span class="line">    <span class="keyword">if</span>(newlen&lt;SDS_MAX_PREALLOC)</span><br><span class="line">        newlen *=<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        newlen=SDS_MAX_PREALLOC;</span><br><span class="line">    newsh=zrealloc(sh,<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+newlen+<span class="number">1</span>);</span><br><span class="line">    newsh-&gt;len=len;</span><br><span class="line">    newsh-&gt;<span class="built_in">free</span>=newlen-len;</span><br><span class="line">    <span class="keyword">return</span> newsh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//copy count len bytes of string pointed by pointer t to sds s</span></span><br><span class="line"><span class="function">sds <span class="title">sdscpylen</span><span class="params">(sds s,<span class="keyword">const</span> <span class="keyword">char</span> *t,size_t len)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshrd *sh=(<span class="keyword">void</span> *) (s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshrdr)));</span><br><span class="line">    <span class="keyword">size_t</span> totlen=sh-&gt;<span class="built_in">free</span> + sh-&gt;len;</span><br><span class="line">    <span class="keyword">if</span>(totlen &lt; len)&#123;</span><br><span class="line">        s=sdsMakeRoomFor(s,len-sh-&gt;len);</span><br><span class="line">        sh=(<span class="keyword">void</span> *)(s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)));</span><br><span class="line">        totlen=sh-&gt;<span class="built_in">free</span>+sh-&gt;len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">memcpy</span>(s,t,len);</span><br><span class="line">    sh-&gt;len=len;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=totlen=len;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-_感想">4. 感想</h3><ul>
+<li>深入了解调查业务需求。设计恰到好处的元数据结构以改善性能/改善代码结构</li>
+</ul>
+<hr>
 </span>
         
       

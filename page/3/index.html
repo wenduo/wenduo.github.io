@@ -158,8 +158,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/08/01/c++语法/" itemprop="url">
-                c++语法
+              <a class="post-title-link" href="/2015/08/01/shell tricks/" itemprop="url">
+                shell使用
               </a>
             
           
@@ -189,83 +189,14 @@
 
       
         
-          <span itemprop="articleBody"><p>##1.高级宏<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">可变参数</span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> Debug(...) printf(__VA_ARGS__);</span></span><br><span class="line">Debug(<span class="string">"%d"</span>,i);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如参数为空,##可忽略前一个逗号</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> Debug(...) printf(<span class="string">"haha"</span>,##__VA_ARGS__);</span></span><br><span class="line">Debug();</span><br></pre></td></tr></table></figure></p>
-<h2 id="2-几种cast区别">2.几种cast区别</h2><p>reinterpret_cast 完全复制比特位<br>static_cast: 相当于（）</p>
-<blockquote>
-<p>Use dynamic_cast for converting pointers/references within an inheritance hierarchy.</p>
-<p>Use static_cast for ordinary type conversions.</p>
-<p>Use reinterpret_cast for low-level reinterpreting of bit patterns. Use with extreme caution.</p>
-<p>Use const_cast for casting away const/volatile. Avoid this unless you are stuck using a const-incorrect API.</p>
-</blockquote>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/01/make指南/" itemprop="url">
-                make指南
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h2 id="tricks">tricks</h2><p>1.调试<br>可以通过打印变量来调试 @echo “var: “ $(var)</p>
-<h2 id="syntax">syntax</h2><ol>
-<li><p>target:$@</p>
-</li>
-<li><p>占位符：%</p>
-</li>
-<li><p>函数<br>BASE_SRCS += $(wildcard $(SRC_DIR)/*.cpp)<br>MAIN_SRCS = $(patsubst %,./%.cc,$(OBJECT))<br>FUNC_SRCS = $(filter-out $(MAIN_SRCS),$(BASE_SRCS))<br>FUNC_OBJS = $(patsubst %.cc,%.o,$(FUNC_SRCS))</p>
-</li>
+          <span itemprop="articleBody"><h2 id="tricks">tricks</h2><hr>
+<p>1.<br>将自建命令写于bin目录下<br>2.<br>shell有四种模式<br>ssh -t 及不带-t的区别</p>
+<p>3.<br>后台运行   ./api    &amp;<br>4.<br>杀死僵死进程   fg</p>
+<h2 id="脚本编写">脚本编写</h2><hr>
+<ol>
+<li>shell函数参数 dollar1 dollar2 dollar3</li>
+<li>多用shell swtich，少写些文件</li>
+<li>apply一行命令:dollar()<br>如 cd 进 which 所在目录<br>cd dollar(dirname dollar(which raco))</li>
 </ol>
 </span>
         
@@ -297,8 +228,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/08/01/vim 使用/" itemprop="url">
-                vim使用
+              <a class="post-title-link" href="/2015/08/01/sed及awk使用/" itemprop="url">
+                sed及awk使用
               </a>
             
           
@@ -328,13 +259,15 @@
 
       
         
-          <span itemprop="articleBody"><p>##常用</p>
-<ul>
-<li>调整格式：选中后 =<br>##跳转<br>##列编辑<br>列插入 ：ctrl+v shift+i<br>##命令模式</li>
-<li>% 代表全文 ，比如:%d</li>
-<li>全文替换 [addr]s/源字符串/目的字符串/[option]<br>eg: 1. %s/old/new/gc </li>
-<li>复制指定行： a,b y</li>
-</ul>
+          <span itemprop="articleBody"><p>##sed<br>sed是一个流编辑器</p>
+<ol>
+<li>打印第二行 sed -n 2p</li>
+<li>从第0行开始 每三行打印 sed -n “0~3p”</li>
+<li>替换原文件 -i</li>
+<li>删除模式匹配行：sed -i /word/d file</li>
+<li>替换匹配行的匹配字符<br>sed -i “/topic,/s/old_target/new_target/“</li>
+</ol>
+<p>##awk<br>awk是模式匹配语言<br>1.指定分隔符为：或,  -F“[:,]”</p>
 </span>
         
       
@@ -510,8 +443,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/08/01/小而美的redis之dynamic string/" itemprop="url">
-                小而美的redis之dynamic_string
+              <a class="post-title-link" href="/2015/08/01/gdb使用/" itemprop="url">
+                gdb使用
               </a>
             
           
@@ -541,17 +474,17 @@
 
       
         
-          <span itemprop="articleBody"><p><a href="http://redisbook.readthedocs.org/en/latest/internal-datastruct/sds.html" target="_blank" rel="external">redis设计与实现-简单动态字符串</a></p>
-<h3 id="1-_背景">1. 背景</h3><p>c中string查询字符串长度代价为O（n），append字符需重新分配内存</p>
-<p>redis中存在大量查询长度，append字符操作</p>
-<h3 id="2-_目的">2. 目的</h3><p>构造redis内部新的string类型</p>
-<p>以O（1）复杂度查询字符串长度</p>
-<p>append分配内存进行优化</p>
-<h3 id="3-实现方式">3.实现方式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> * sds;</span><br><span class="line"><span class="keyword">struct</span> sdshdr&#123;</span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init,size_t initlen)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh;</span><br><span class="line">    sh = zmalloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+initlen+<span class="number">1</span>);</span><br><span class="line">    sh-&gt;len=initlen;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(sh-&gt;buf,init,initlen);</span><br><span class="line">    <span class="keyword">return</span>  (<span class="keyword">char</span>*) sh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> size_t <span class="title">sdavail</span><span class="params">(<span class="keyword">const</span> sds s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh=(<span class="keyword">void</span> *)(s - (<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)))</span><br><span class="line">    <span class="keyword">return</span> sh-&gt;<span class="built_in">free</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*enlarge space（double what we need）</span><br><span class="line"> *note:this does not change the length of sds string</span><br><span class="line"> */</span></span><br><span class="line"><span class="function">sds <span class="title">sdsMakeRoomFor</span><span class="params">(sds s,size_T addlen)</span></span>&#123;</span><br><span class="line">    strucrt sdshdr *sh,*newsh;</span><br><span class="line">    <span class="keyword">size_t</span> <span class="built_in">free</span>=sdavail(s);</span><br><span class="line">    <span class="keyword">size_t</span> len=sdslen(s);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">free</span>&gt;=addlen)</span><br><span class="line">        <span class="keyword">return</span> s;</span><br><span class="line">    newlen=len+addlen;</span><br><span class="line">    <span class="keyword">if</span>(newlen&lt;SDS_MAX_PREALLOC)</span><br><span class="line">        newlen *=<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        newlen=SDS_MAX_PREALLOC;</span><br><span class="line">    newsh=zrealloc(sh,<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+newlen+<span class="number">1</span>);</span><br><span class="line">    newsh-&gt;len=len;</span><br><span class="line">    newsh-&gt;<span class="built_in">free</span>=newlen-len;</span><br><span class="line">    <span class="keyword">return</span> newsh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//copy count len bytes of string pointed by pointer t to sds s</span></span><br><span class="line"><span class="function">sds <span class="title">sdscpylen</span><span class="params">(sds s,<span class="keyword">const</span> <span class="keyword">char</span> *t,size_t len)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshrd *sh=(<span class="keyword">void</span> *) (s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshrdr)));</span><br><span class="line">    <span class="keyword">size_t</span> totlen=sh-&gt;<span class="built_in">free</span> + sh-&gt;len;</span><br><span class="line">    <span class="keyword">if</span>(totlen &lt; len)&#123;</span><br><span class="line">        s=sdsMakeRoomFor(s,len-sh-&gt;len);</span><br><span class="line">        sh=(<span class="keyword">void</span> *)(s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)));</span><br><span class="line">        totlen=sh-&gt;<span class="built_in">free</span>+sh-&gt;len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">memcpy</span>(s,t,len);</span><br><span class="line">    sh-&gt;len=len;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=totlen=len;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4-_感想">4. 感想</h3><ul>
-<li>深入了解调查业务需求。设计恰到好处的元数据结构以改善性能/改善代码结构</li>
+          <span itemprop="articleBody"><p>删除断点 delete 1<br>查看断点 info b<br>查看线程 info thread<br>进入线程 thread i<br>查看各级上下文 up/down/frame<br>指定搜索源文件目录：-d dir<br>打印类型 ptype var<br>高级断点： b xxx. condition xxx</p>
+<h2 id="1-_gdb_脚本">1. gdb 脚本</h2><h4 id="a-_运行">a. 运行</h4><ul>
+<li>编辑运行gdb目录的 .gdbinit文件</li>
+<li>如果显示auto-load加载不上，则编辑~/.gdbinit<br>set auto-load safe-path / </li>
 </ul>
-<hr>
+<h2 id="2-_gdb_场景">2. gdb 场景</h2><h4 id="a-_调试子进程">a. 调试子进程</h4><ol>
+<li>set detach-on-fork off</li>
+<li>inferior id</li>
+<li>info inferiors</li>
+<li>detach inferior ID</li>
+</ol>
 </span>
         
       
@@ -616,6 +549,70 @@
           <span itemprop="articleBody"><h2 id="常见错误：">常见错误：</h2><ol>
 <li>解析错误：parsefromstring 传入char*<br>被\0 截断。应该改为parsefromarray,或先转换为string</li>
 </ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/bada常用/" itemprop="url">
+                bada常用
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>io:format(“~p~n”, [bada_console:getallprimaryleader()]).</p>
+<p>length([io:format(“~p ~p ~p ~n”, [Y, X, node(X)]) || {[X | _],Y}&lt;-[ {pg2:get_members(“stream_media_common@”++integer_to_list(X)++”@primary_worker”), “stream_media_common@”++integer_to_list(X)++”@primary_worker”} || X&lt;-lists:seq(0,1023)]]).</p>
+<p>bada_sdk_pb_processor:get_partition(&lt;&lt;”vtscan”&gt;&gt;, &lt;&lt;””&gt;&gt;).</p>
 </span>
         
       
@@ -722,142 +719,6 @@
           
           
             
-              <a class="post-title-link" href="/2015/08/01/gdb使用/" itemprop="url">
-                gdb使用
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p>删除断点 delete 1<br>查看断点 info b<br>查看线程 info thread<br>进入线程 thread i<br>查看各级上下文 up/down/frame<br>指定搜索源文件目录：-d dir<br>打印类型 ptype var<br>高级断点： b xxx. condition xxx</p>
-<h2 id="1-_gdb_脚本">1. gdb 脚本</h2><h4 id="a-_运行">a. 运行</h4><ul>
-<li>编辑运行gdb目录的 .gdbinit文件</li>
-<li>如果显示auto-load加载不上，则编辑~/.gdbinit<br>set auto-load safe-path / </li>
-</ul>
-<h2 id="2-_gdb_场景">2. gdb 场景</h2><h4 id="a-_调试子进程">a. 调试子进程</h4><ol>
-<li>set detach-on-fork off</li>
-<li>inferior id</li>
-<li>info inferiors</li>
-<li>detach inferior ID</li>
-</ol>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/01/bada常用/" itemprop="url">
-                bada常用
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p>io:format(“~p~n”, [bada_console:getallprimaryleader()]).</p>
-<p>length([io:format(“~p ~p ~p ~n”, [Y, X, node(X)]) || {[X | _],Y}&lt;-[ {pg2:get_members(“stream_media_common@”++integer_to_list(X)++”@primary_worker”), “stream_media_common@”++integer_to_list(X)++”@primary_worker”} || X&lt;-lists:seq(0,1023)]]).</p>
-<p>bada_sdk_pb_processor:get_partition(&lt;&lt;”vtscan”&gt;&gt;, &lt;&lt;””&gt;&gt;).</p>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
               <a class="post-title-link" href="/2015/08/01/yum-rpm使用/" itemprop="url">
                 yumrpm使用
               </a>
@@ -902,6 +763,145 @@
 <li>查看rpm包里文件的安装路径：rpm -ql</li>
 <li>安装本地rpm包：rpm -ivh</li>
 <li>查找文件来自哪个rpm包：rpm -qf path-to-bin</li>
+</ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/c++语法/" itemprop="url">
+                c++语法
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>##1.高级宏<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">可变参数</span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> Debug(...) printf(__VA_ARGS__);</span></span><br><span class="line">Debug(<span class="string">"%d"</span>,i);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 如参数为空,##可忽略前一个逗号</span></span><br><span class="line"><span class="preprocessor">#<span class="keyword">define</span> Debug(...) printf(<span class="string">"haha"</span>,##__VA_ARGS__);</span></span><br><span class="line">Debug();</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-几种cast区别">2.几种cast区别</h2><p>reinterpret_cast 完全复制比特位<br>static_cast: 相当于（）</p>
+<blockquote>
+<p>Use dynamic_cast for converting pointers/references within an inheritance hierarchy.</p>
+<p>Use static_cast for ordinary type conversions.</p>
+<p>Use reinterpret_cast for low-level reinterpreting of bit patterns. Use with extreme caution.</p>
+<p>Use const_cast for casting away const/volatile. Avoid this unless you are stuck using a const-incorrect API.</p>
+</blockquote>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/08/01/make指南/" itemprop="url">
+                make指南
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
+            2015-08-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="tricks">tricks</h2><p>1.调试<br>可以通过打印变量来调试 @echo “var: “ $(var)</p>
+<h2 id="syntax">syntax</h2><ol>
+<li><p>target:$@</p>
+</li>
+<li><p>占位符：%</p>
+</li>
+<li><p>函数<br>BASE_SRCS += $(wildcard $(SRC_DIR)/*.cpp)<br>MAIN_SRCS = $(patsubst %,./%.cc,$(OBJECT))<br>FUNC_SRCS = $(filter-out $(MAIN_SRCS),$(BASE_SRCS))<br>FUNC_OBJS = $(patsubst %.cc,%.o,$(FUNC_SRCS))</p>
+</li>
 </ol>
 </span>
         

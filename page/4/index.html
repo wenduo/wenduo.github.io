@@ -158,8 +158,8 @@
           
           
             
-              <a class="post-title-link" href="/2015/08/01/sed及awk使用/" itemprop="url">
-                sed及awk使用
+              <a class="post-title-link" href="/2014/08/01/设计模式/" itemprop="url">
+                设计模式
               </a>
             
           
@@ -169,8 +169,8 @@
       <div class="post-meta">
         <span class="post-time">
           發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
+          <time itemprop="dateCreated" datetime="2014-08-01T15:30:16+08:00" content="2014-08-01">
+            2014-08-01
           </time>
         </span>
 
@@ -189,15 +189,47 @@
 
       
         
-          <span itemprop="articleBody"><p>##sed<br>sed是一个流编辑器</p>
-<ol>
-<li>打印第二行 sed -n 2p</li>
-<li>从第0行开始 每三行打印 sed -n “0~3p”</li>
-<li>替换原文件 -i</li>
-<li>删除模式匹配行：sed -i /word/d file</li>
-<li>替换匹配行的匹配字符<br>sed -i “/topic,/s/old_target/new_target/“</li>
-</ol>
-<p>##awk<br>awk是模式匹配语言<br>1.指定分隔符为：或,  -F“[:,]”</p>
+          <span itemprop="articleBody"><h2 id="一-singleton:单例模式">一.singleton:单例模式</h2><p>(<a href="http://www.cnblogs.com/rush/archive/2011/10/30/2229565.html" target="_blank" rel="external">http://www.cnblogs.com/rush/archive/2011/10/30/2229565.html</a>)</p>
+<p>1.<em>单线程实现</em></p>
+<blockquote>
+<p>私有化构造函数<br>私有保存一个自己的instance<br>用public static getInstance 判断创建实例<br>用singleton.getInstance()取</p>
+</blockquote>
+<p>2.<em>多线程下双重检查</em></p>
+<blockquote>
+<p><code>if (singleton== null)     {   
+            synchronized (Singleton.class)   
+            {   
+                if (singleton== null)   
+                {   
+                    singleton= new Singleton();   
+                }   
+            }   
+        }</code></p>
+</blockquote>
+<hr>
+<p>###二.IOC:依赖注入</p>
+<hr>
+<p><em>依赖</em>    ：       调用者创建被调用者实例<br> <em>依赖注入</em>：   容器创建实例并注入调用者</p>
+<hr>
+<p>#####<em>材料</em><br><a href="http://www.cnblogs.com/leoo2sk/archive/2009/06/17/1504693.html" target="_blank" rel="external">依赖注入那些事-张洋</a></p>
+<blockquote>
+<p><em>ocp原则：</em>对扩展开放，对修改关闭<br><em>面向对象设计原则：</em>明确划分职责<br><em>多态.接口之实质：</em>把逻辑上变化和不变的部分隔离开</p>
+</blockquote>
+<hr>
+<p>#####<em>原理</em><br>类型1.客户类A定义注入点。其他程序实例化服务类并注入A。 </p>
+<blockquote>
+<p>setter/construction injection：客户类设置服务类数据成员,set函数或构造函数作为注入点。</p>
+</blockquote>
+<p>类型2.系统提供一个factory模式的获取点。客户类需要时自己获取。</p>
+<hr>
+<p>###<em>三.工厂模式</em></p>
+<hr>
+<p>#####<em>材料</em></p>
+<blockquote>
+<p>《大话设计模式》</p>
+<hr>
+</blockquote>
+<p>#####**<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a<br>a</p>
 </span>
         
       
