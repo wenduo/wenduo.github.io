@@ -158,6 +158,389 @@
           
           
             
+              <a class="post-title-link" href="/2016/03/01/posix thread/" itemprop="url">
+                posix thread
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-03-01T15:30:16+08:00" content="2016-03-01">
+            2016-03-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>posix (portable operating system interface)</p>
+<p>##1. pthread<br>pthread 与process不同，无父子概念<br>使用<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pthread_t</span> mythread;</span><br><span class="line">pthread_create( &amp;mythread);</span><br><span class="line"><span class="comment">//睡眠等待mythread的结束</span></span><br><span class="line">pthread_join(mythread);</span><br></pre></td></tr></table></figure></p>
+<p>####2. mutex<br>使用mutex来保护共享数据<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pthread_mutex_init( <span class="keyword">pthread_mutex_t</span> *mymutex, null)</span><br><span class="line">pthread_mutex_lock(<span class="keyword">pthread_mutex_t</span> *mutex)</span><br><span class="line">pthread_mutex_unlock(<span class="keyword">pthread_mutex_t</span> *mutex)</span><br><span class="line">pthread_mutex_trylock(<span class="keyword">pthread_mutex_t</span> *mutex)</span><br></pre></td></tr></table></figure></p>
+<p>机制：</p>
+<ul>
+<li>lock 后本线程睡眠，直到锁被释放</li>
+<li>unlock后其他线程可以抢到锁</li>
+<li>trylock不阻塞本线程，只尝试加锁</li>
+</ul>
+<p>####3. cond<br>a. 背景：<br>读写者，读者想实时检测某共享变量是否达到某一情况，需要不断加锁读，影响写者写。需要使用cond防止竞争，cond需要与mutex共同使用。cond用于通信，mutex用于保护<br>b. cond 读者：<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//读者</span></span><br><span class="line"> thread_mutex_lock(&amp;mutex);</span><br><span class="line"> <span class="comment">//while 防止意外唤醒</span></span><br><span class="line"> <span class="keyword">while</span> (!condition)&#123;</span><br><span class="line">        pthread_cond_wait(&amp;cond, &amp;mutex);</span><br><span class="line"> &#125;</span><br><span class="line"> do_something_need_lock();</span><br><span class="line"> pthread_mutex_unlock(&amp;mutex);   </span><br><span class="line"><span class="comment">//写者</span></span><br><span class="line"> pthread_mutex_lock(&amp;mutex);</span><br><span class="line">    pthread_cond_signal(&amp;cond);<span class="comment">//or broadcast</span></span><br><span class="line">    pthread_mutex_unlock(&amp;mutex);</span><br></pre></td></tr></table></figure></p>
+<p>c. pthread_cond_wait机制 </p>
+<ol>
+<li>释放锁</li>
+<li>睡眠，等待signal/broadcast</li>
+<li>加锁<br><strong>因此使用完cond后一定要unlock才可以</strong></li>
+</ol>
+<p>d. pthread_cond_signal机制</p>
+<ol>
+<li>选择一个等待cond的线程通知</li>
+</ol>
+<p>e. 为什么cond要与mutex配合：<br>读操作联合睡眠操作不是原子的。<br>下面序列将导致读者永远睡眠:<br>读者读，空，<br>写者写，<br>写者notify<br>读者睡眠</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2016/03/01/网络与socket/" itemprop="url">
+                网络与socket
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-03-01T15:30:16+08:00" content="2016-03-01">
+            2016-03-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>##一.socket<br>socket是对通信端口点的抽象</p>
+<p>##二. tcp (transmission control protocol)</p>
+<p>###1. 网络字节序</p>
+<p>####a. int a= 0x12345678;<br>在小端模式下  79 56 34 12<br>在大端模式下  12 34 56 78</p>
+<p>####b. tcp/ip采用大端，称为网络字节序</p>
+<p>####c. 转换函数 ntohl :network to host long</p>
+<p>##三.tcp 与 udp的区别<br>udp:自包含报文，不保证送达不保证时序</p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2016/03/01/linux命令之待整理/" itemprop="url">
+                linux命令之待整理
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-03-01T15:30:16+08:00" content="2016-03-01">
+            2016-03-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="##2-_编译与链接">##2. 编译与链接</h2><p>c.兼容性问题及解决<br>链接时指定程序优先加载某路径下动态库<br>LDFLAG= -rpath=(path)</p>
+<h2 id="##3-_系统硬件监控">##3. 系统硬件监控</h2><p>查看cpu信息<br>cat /proc/cpuinfo<br>监听80端口与某机器的通信<br>sudo ngrep -d eth1 -W byline host remote_ip and port 80</p>
+<p>监控进程卡在哪里 perf top -p pid<br>优化加载动态库：LD_PRELOAD</p>
+<p>解决undefined symbol方法：<br>先 nm -d rados.so |grep symbol 确认so中有该符号<br>ldd rados.so 找出依赖路径<br>nm -d 依赖.so |grep symbol</p>
+<p>####查看coredump在哪里：<br>/var/log/message</p>
+<p>####abrt扑捉core dump：<br>1.修改 /etc/abrt.conf ,/etc/abrt-action processpack 为yes<br>2.service restart</p>
+<p>####查看内存：<br>vmstat 1<br>格式化：<br>umount<br>mkfs<br>mount<br>增加用户：</p>
+<p>##先切换到root账户，然后<br>sudo useradd -m wangwenduo<br>sudo passwd wangwenduo<br>增加sudo权限：<br>chmod u+w /etc/sudoers<br>vim /etc/sudoers<br>chmod u-x /etc/sudoers<br>查看设备的使用者<br>fuser  lsof<br>查看文件系统<br>df -ihT<br>删除海量小文件<br>mkdir empty<br>rsync -a –delete empty/ your_folder/</p>
+<p>统计行数       wc         find <em> |xargs wc -l<br>清空cache和buffer sync; echo 3 &gt; /proc/sys/vm/drop_caches<br>显示依赖 ldd<br>更改软链 ln<br>用显示某些进程并杀掉 ps aux|grep bada| awk ‘{print $2}’ |xargs kill -9<br>Du -sh </em> 文件大小<br>Df  查看磁盘<br>防火墙：<br>    sudo iptables -A INPUT -i {iface} -p tcp -s {ip-address}/{netmask} –dport 6789 -j ACCEPT<br>    sudo iptables -A INPUT -i {iface} -p tcp -s {ip-address}/{netmask} –dport 6800:7300 -j ACCEPT<br>    禁掉某端口的input ：<br>        sudo iptables -A INPUT  -p tcp  –dport 41977 -j REJECT<br>    显示所有规则：<br>             sudo iptables -L<br>     删除某规则：<br>            sudo iptables -D INPUT 1</p>
+<p>限制带宽<br>     yum -y install iproute<br>    /sbin/tc qdisc add dev eth0 root tbf rate 50kbit latency 50ms burst 1000<br>取消限制：<br>  /sbin/tc qdisc del dev eth0 root tbf</p>
+<p>查看网络流量<br>     iftop<br>   dstat</p>
+<p>查看硬盘速度：</p>
+<p>fio -ioengine=libaio -bs=4k -direct=1 -thread -rw=randread -size=40G -filename=test -name=”360 4k random read” -iodepth=8 -runtime=60</p>
+<p>查看自己的程序：<br>  top -U $USER</p>
+<p>查看父进程<br>ps -ef<br>查看所有句柄<br>lsof -n | awk ‘{print $2}’ |  sort | uniq -c | sort -nr | awk ‘{print $2}’|more</p>
+<p>以格式查看json<br>jq</p>
+<h2 id="##4-_系统软件监控">##4. 系统软件监控</h2><p>dmesg<br>监控文件系统:<br>slabtop show</p>
+<h2 id="##5-_文本工具">##5. 文本工具</h2><ol>
+<li>按名字查找文件：find ./ -name “<em>lds</em>“</li>
+<li>断开ssh连接：~.</li>
+<li>以格式查看json：jq</li>
+<li>新建用户：<br>echo “pengxindong ALL = (root) NOPASSWD:ALL” | sudo tee /etc/sudoers.d/yaowei<br>sudo chmod 0440 /etc/sudoers.d/pengxindong</li>
+</ol>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2016/03/01/linux kernel development/" itemprop="url">
+                linux-kernel-development
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2016-03-01T15:30:16+08:00" content="2016-03-01">
+            2016-03-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>##一. 简介</p>
+<h3 id="1-1_什么是操作系统内核">1.1 什么是操作系统内核</h3><p>操作系统内核概念比较宽泛。一般来讲，操作系统内核包含</p>
+<ul>
+<li>调度：cpu内存，内存</li>
+<li>系统服务:网络，进程通信， 中断处理等</li>
+<li>io栈</li>
+</ul>
+<p>系统内核程序一般运行在受保护的内存空间，此时的系统状态与内存空间称为内核态。app通过调用系统函数，进入内核态。同时，内核处理来自硬件或程序的中断.为了快速响应中断，除了在进程上下文之外系统还定义了中断上下文。</p>
+<p><img src="http://static.zybuluo.com/wenduo/me7d0nv7xo5miz6g7twz5dgt/Linux_Kernel_Development_3rd_Edition_-_Love_-_2010_pdf__33_%E4%B9%8B_467_%E9%A1%B5_.png" alt="内核态"></p>
+<p>所以所有的cpu内核，只在三种状态切换：user-space, kernel-space, interupt-context。(idle实际上是一个最低优先级的内核程序，运行cpu指令hlt，暂停并等待硬件中断)</p>
+<p>根据内核态的不同，操作系统一般有两种设计思路： <strong>monolithic kernel 和 microkernel</strong>。</p>
+<ul>
+<li>在monokernel 设计中整个内核运行于单进程,共享一地址空间。函数间相互调用很方便。unix大多采用这种设计</li>
+<li>microkernel将内核功能分为多部分并在不同进程下运行.这种设计很优美很学院，缺点是函数调用需要通过ipc。</li>
+</ul>
+<p>unix和linux都是monolithic kernel</p>
+<h3 id="1-2_linux和unix的区别">1.2 linux和unix的区别</h3><p>linux从unix而来，linux和最原始的unix相比，拥有下列特性（就像一些商业化unix系统一样）</p>
+<ul>
+<li>smp</li>
+<li>preemptive task</li>
+<li>可以根据需求动态加载某些内核模块（比monothilc更加模块化）</li>
+</ul>
+<p>##十三. vfs</p>
+<h3 id="13-1_抽象文件系统">13.1 抽象文件系统</h3><p>vfs规定出文件系统的一系列操作,我们定义出这些操作也就算是写了一套文件系统。<br>一次user_space的write(fd,buf,len)，实际上调用vfs层的sys_write，而后vfs调用各文件系统对应的write方法，而写入device。看起来像是一个接口。</p>
+<h3 id="13-2_vfs的元素">13.2 vfs的元素</h3><ol>
+<li><p>filesystem：是一个树结构,对应操作为创建，删除，mount等，其元信息记录在superblock中</p>
+</li>
+<li><p>file:file单纯的记录数据，其元信息保存在index node中</p>
+</li>
+<li><p>inode：一个文件对应一个inode，包含文件的物理存储信息，比如这个文件对应哪些block等。操作系统打开文件实际上分两步：找到文件名对应inode，读取inode对应block</p>
+</li>
+</ol>
+<ul>
+<li>硬链接：两个文件名指向同一个inode叫做硬链接，当该inode被链接计数为0是即删除其对应的数据。</li>
+<li>软链接：一个文件名指向另外一个文件的文件名，这样当该文件被删除时，链接也失效</li>
+<li>在线更新文件：操作系统打开文件后只感知inode而不感知文件名。可以用指向另外一个inode的同名文件名替换该文件名(而不改变运行时程序持有的inode)，当程序下次读取该文件时即更改了配置。</li>
+</ul>
+<ol>
+<li>dentry:<br>即directory-entry。一个inode可能对应多个dentry，主要包含文件名，上下级路径等组织信息，用于回溯路径等。dentry节点构成了一个树状结构。<br>dentry有三种状态</li>
+</ol>
+<ul>
+<li>used: 与inode关联，且正在被vfs使用</li>
+<li>unused: 与inode绑定但未被vfs使用，且未被vfs使用</li>
+<li>negative:未与inode绑定，没</li>
+</ul>
+<p>那么访问一次文件需要:依次读路径中的dentry，而后读inode信息,而后读对应磁盘。所有的dentry都保存在内存中，如没有则访问文件时需要新创建</p>
+<p>##十四. Block IO</p>
+<h3 id="块设备">块设备</h3><p>设备一般分为两种</p>
+<ul>
+<li>block device：支持随机访问，对程序性能要求高</li>
+<li>chararctor device：只支持以流的方式访问</li>
+</ul>
+<h3 id="14-1_块设备基本特征">14.1 块设备基本特征</h3><p> 物理上，访问块设备的基本单元是sector，各个设备不同，一般为512byte。而block则是对文件系统的抽象，包含若干个sector,但应小于page size。一般为500byte，1k或4k，一般叫sector为 device block，block为 IO block</p>
+<h3 id="14-2_buffer_page与_IO_block">14.2 buffer page与 IO block</h3><ul>
+<li>buffer 是IO block在内存中的映射。一个buffer对应硬盘上一个IOblock.一个buffer的整体信息存储在buffer head中。而内存中一个page可能包含多块block，也即多个buffer。</li>
+<li>buffer是block在内存中的映射。内核中通过<em>buffer_head</em>记录physical block到page的映射。</li>
+</ul>
+<h3 id="14-3_bio">14.3 bio</h3><ul>
+<li>由于buffer_head结构体比较大，系统又多以page为单元操作。在写入page对应多个buffer，很不方便，同时在写入大块数据时需要多个buffer造成额外空间开销。因此出现了page cache解决page到block问题(16章)，bio解决大块数据读写问题。</li>
+<li>一个bio operation在内核中通过bio_structure表示，bio_structure是一个数组，成员是buffer所在的page及offset.这样可以一次操作多个buffer也即下面的block，而无需讲一次io拆分成多个block。<br><img src="http://static.zybuluo.com/wenduo/2nujiwof0xl4gqbus03cqxs7/Linux_Kernel_Development_3rd_Edition_pdf__322_%E4%B9%8B_467_%E9%A1%B5_.png" alt="Linux_Kernel_Development_3rd_Edition_pdf__322_之_467_页_.png-312.4kB"><h3 id="14-1_request_queue与_IO_scheduler">14.1 request queue与 IO scheduler</h3></li>
+<li>一个block device 从它对应的 request queue 中取 request(包含多个bio)。request queue中的request 写自上层的文件系统。</li>
+<li>IO sheduler 负责merge and sort request queue，目的是通过减少磁盘 seek 来提高整体output<br>merge指将两次io合并为一个，sort指通过request的sector排序，使得磁头只需要按一个方向依次寻道。因此又叫电梯调度算法。</li>
+</ul>
+<p>##十五 page cache<br>一般讲cache，对应backing store,指被cache的东西，如disk.<br>hit指读到cache住的东西，表明cache的有效性</p>
+<p>###15.1 page cache<br>page cache一般有三种写策略：</p>
+<ul>
+<li>no write :直接写磁盘，invalidate page cache,cache不住write，同时代价高</li>
+<li>write through：写磁盘同时写page cache，实现简单，cache与backing store一致</li>
+<li>write back(write behind):只写page cache，标记page cache为脏，并加入dirty list，后台有一个写回进程定期往disk写，写后重新标记page cache为不脏，这么做可以进行写操作合并，同时下次可以进行merge and sort，性能一般比较好，但实现较复杂。</li>
+</ul>
+<p>###15.2 linux page cache<br>linux采用lru管理page cache。<br>每次读写，都会从cache里查找相应的page是否在cache中。这需要极高的效率</p>
+<ul>
+<li><p>一般的lru实现</p>
+<blockquote>
+<p>维护一个双向链表和hash表。每次reference，在hash表中查找该key对应的node。无则将node加入链表头部和hashtable中。如果找到这个node，则将其移到双向链表头部(仍是o(1)复杂度)。stl::map + stl::list很容易完成</p>
+</blockquote>
+</li>
+<li><p>linux2.6之前，hashtable</p>
+<blockquote>
+<p>很简单。整个系统维护一个hashtable，每次hash结果返回一个双向链表，包含所有hash到相同值的page。每次reference，在hashtable中取得双向链表后遍历。<br>这么做的缺点是：<br>1.全局一把锁锁住超级大的hash-table，性能差空间占用大<br>2.cache miss时效率很差，需要遍历完整个双向链表</p>
+</blockquote>
+</li>
+<li><p>linux2.6之后 radix tree</p>
+<blockquote>
+<p>radix tree </p>
+</blockquote>
+</li>
+</ul>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/12/01/linux之IO模式与c10k/" itemprop="url">
                 linux之IO模式与c10k
               </a>
@@ -208,6 +591,84 @@
 <hr>
 <h2 id="结论：">结论：</h2><p>各模式IO对比如下图所示</p>
 <p><img src="http://segmentfault.com/img/bVm1c9" alt="各IO模式对比"></p>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
+              <a class="post-title-link" href="/2015/12/01/sicp/" itemprop="url">
+                sicp
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-12-01T15:30:16+08:00" content="2015-12-01">
+            2015-12-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><h2 id="一-构造过程抽象">一.构造过程抽象</h2><p>###1.程序设计基本元素<br>a. <strong>心智</strong><br>1.产生认识<br>2.组合<br>3.对比<br>4.抽象/隔离</p>
+<p>b. <strong>语言的基本功能</strong></p>
+<ol>
+<li>基本表达:描述最简单个体</li>
+<li>组合的方法：从简单构造出复制的元素</li>
+<li>抽象的方法：命名操纵复合对象</li>
+</ol>
+<p>c. <strong>环境</strong><br>环境从另一种角度看，是过程执行的上下文</p>
+<p>d. <strong>语法糖</strong><br>对完全可以以统一形式描述的东西给出另一种表面结构。</p>
+<blockquote>
+<p>语法的糖衣带来分号的癌症（指语法说明书冗长）</p>
+</blockquote>
+<p>e. <strong>代换模型</strong><br>展开–规约的过程。有两类次序:</p>
+<ol>
+<li>应用序(applicative order)：evaluate args and then apply</li>
+<li>正则序(normal order)：full expand and then reduce</li>
+</ol>
 </span>
         
       
@@ -527,6 +988,76 @@
           
           
             
+              <a class="post-title-link" href="/2015/11/01/c之函数指针/" itemprop="url">
+                c之函数指针
+              </a>
+            
+          
+        </h1>
+      
+
+      <div class="post-meta">
+        <span class="post-time">
+          發表於
+          <time itemprop="dateCreated" datetime="2015-11-01T15:30:16+08:00" content="2015-11-01">
+            2015-11-01
+          </time>
+        </span>
+
+        
+
+        
+          
+        
+      </div>
+    </header>
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody"><p>函数的本质是表达式的抽象，是堆栈中的一段程序指令</p>
+<ul>
+<li>可以通过函数指针实现接口</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">add</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a+b;&#125;;</span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">minus</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a-b;&#125;; </span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">multiply</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a*b;&#125;; </span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">divide</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b)</span></span>&#123;<span class="keyword">return</span> a/b;&#125; ;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">float</span> （*fp）(<span class="keyword">float</span> a,<span class="keyword">float</span> b);</span><br><span class="line"><span class="function"><span class="keyword">float</span> <span class="title">callee</span><span class="params">(<span class="keyword">float</span> a,<span class="keyword">float</span> b,fp p)</span></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> result=<span class="number">0.0</span>;</span><br><span class="line">    result=p(a,b);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">caller</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">float</span> result;</span><br><span class="line">    result=callee(<span class="number">1</span>,<span class="number">2</span>,add);</span><br><span class="line">    result=callee(<span class="number">3</span>,<span class="number">5</span>,minus);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>通过函数指针实现类<br>下文中，aeFileEvent类中包含rfileProc接口。initServer中可为其注册回调函数。</li>
+</ul>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ae.h</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> aeFileEvent&#123;</span><br><span class="line">    <span class="keyword">int</span> mask;</span><br><span class="line">    aeFileProc *rfileProc;</span><br><span class="line">    aeFileProc * wfileProc;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">typedef</span> <span class="keyword">void</span> <span class="title">aeFileProc</span><span class="params">(<span class="keyword">struct</span> aeEventLoop *eventLoop, <span class="keyword">int</span> fd, <span class="keyword">void</span> *clientData, <span class="keyword">int</span> mask)</span></span>;</span><br><span class="line"> </span><br><span class="line"><span class="comment">//redis.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">initServer</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>(j = <span class="number">0</span>; j &lt; server.ipfd_count; j++)&#123;</span><br><span class="line">        aeCreateFileEvent(server.el, server.ipfd[j], AE_READABLE, acceptTcpHandler,<span class="literal">NULL</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//networking.c</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">acceptTcpHandler</span><span class="params">(aeEventLoop *el, <span class="keyword">int</span> fd, <span class="keyword">void</span> *privdata, <span class="keyword">int</span> mask)</span></span>&#123;</span><br><span class="line">    <span class="comment">//logic here;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
+
+      
+      
+        <h1 class="post-title" itemprop="name headline">
+          
+          
+            
               <a class="post-title-link" href="/2015/08/01/shell tricks/" itemprop="url">
                 shell使用
               </a>
@@ -566,425 +1097,6 @@
 <li>shell函数参数 dollar1 dollar2 dollar3</li>
 <li>多用shell swtich，少写些文件</li>
 <li>apply一行命令:dollar()<br>如 cd 进 which 所在目录<br>cd dollar(dirname dollar(which raco))</li>
-</ol>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/01/make指南/" itemprop="url">
-                make指南
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h2 id="tricks">tricks</h2><p>1.调试<br>可以通过打印变量来调试 @echo “var: “ $(var)</p>
-<h2 id="syntax">syntax</h2><ol>
-<li><p>target:$@</p>
-</li>
-<li><p>占位符：%</p>
-</li>
-<li><p>函数<br>BASE_SRCS += $(wildcard $(SRC_DIR)/*.cpp)<br>MAIN_SRCS = $(patsubst %,./%.cc,$(OBJECT))<br>FUNC_SRCS = $(filter-out $(MAIN_SRCS),$(BASE_SRCS))<br>FUNC_OBJS = $(patsubst %.cc,%.o,$(FUNC_SRCS))</p>
-</li>
-</ol>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/01/小而美的redis之dynamic string/" itemprop="url">
-                小而美的redis之dynamic_string
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p><a href="http://redisbook.readthedocs.org/en/latest/internal-datastruct/sds.html" target="_blank" rel="external">redis设计与实现-简单动态字符串</a></p>
-<h3 id="1-_背景">1. 背景</h3><p>c中string查询字符串长度代价为O（n），append字符需重新分配内存</p>
-<p>redis中存在大量查询长度，append字符操作</p>
-<h3 id="2-_目的">2. 目的</h3><p>构造redis内部新的string类型</p>
-<p>以O（1）复杂度查询字符串长度</p>
-<p>append分配内存进行优化</p>
-<h3 id="3-实现方式">3.实现方式</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> * sds;</span><br><span class="line"><span class="keyword">struct</span> sdshdr&#123;</span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">free</span>;</span><br><span class="line">    <span class="keyword">char</span> buf[];</span><br><span class="line">&#125;</span><br><span class="line"><span class="function">sds <span class="title">sdsnewlen</span><span class="params">(<span class="keyword">const</span> <span class="keyword">void</span> *init,size_t initlen)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh;</span><br><span class="line">    sh = zmalloc(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+initlen+<span class="number">1</span>);</span><br><span class="line">    sh-&gt;len=initlen;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span>(initlen &amp;&amp; init)</span><br><span class="line">        <span class="built_in">memcpy</span>(sh-&gt;buf,init,initlen);</span><br><span class="line">    <span class="keyword">return</span>  (<span class="keyword">char</span>*) sh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">inline</span> size_t <span class="title">sdavail</span><span class="params">(<span class="keyword">const</span> sds s)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshdr *sh=(<span class="keyword">void</span> *)(s - (<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)))</span><br><span class="line">    <span class="keyword">return</span> sh-&gt;<span class="built_in">free</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*enlarge space（double what we need）</span><br><span class="line"> *note:this does not change the length of sds string</span><br><span class="line"> */</span></span><br><span class="line"><span class="function">sds <span class="title">sdsMakeRoomFor</span><span class="params">(sds s,size_T addlen)</span></span>&#123;</span><br><span class="line">    strucrt sdshdr *sh,*newsh;</span><br><span class="line">    <span class="keyword">size_t</span> <span class="built_in">free</span>=sdavail(s);</span><br><span class="line">    <span class="keyword">size_t</span> len=sdslen(s);</span><br><span class="line">    <span class="keyword">if</span>(<span class="built_in">free</span>&gt;=addlen)</span><br><span class="line">        <span class="keyword">return</span> s;</span><br><span class="line">    newlen=len+addlen;</span><br><span class="line">    <span class="keyword">if</span>(newlen&lt;SDS_MAX_PREALLOC)</span><br><span class="line">        newlen *=<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        newlen=SDS_MAX_PREALLOC;</span><br><span class="line">    newsh=zrealloc(sh,<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)+newlen+<span class="number">1</span>);</span><br><span class="line">    newsh-&gt;len=len;</span><br><span class="line">    newsh-&gt;<span class="built_in">free</span>=newlen-len;</span><br><span class="line">    <span class="keyword">return</span> newsh-&gt;buf;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//copy count len bytes of string pointed by pointer t to sds s</span></span><br><span class="line"><span class="function">sds <span class="title">sdscpylen</span><span class="params">(sds s,<span class="keyword">const</span> <span class="keyword">char</span> *t,size_t len)</span></span>&#123;</span><br><span class="line">    <span class="keyword">struct</span> sdshrd *sh=(<span class="keyword">void</span> *) (s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshrdr)));</span><br><span class="line">    <span class="keyword">size_t</span> totlen=sh-&gt;<span class="built_in">free</span> + sh-&gt;len;</span><br><span class="line">    <span class="keyword">if</span>(totlen &lt; len)&#123;</span><br><span class="line">        s=sdsMakeRoomFor(s,len-sh-&gt;len);</span><br><span class="line">        sh=(<span class="keyword">void</span> *)(s-(<span class="keyword">sizeof</span>(<span class="keyword">struct</span> sdshdr)));</span><br><span class="line">        totlen=sh-&gt;<span class="built_in">free</span>+sh-&gt;len;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">memcpy</span>(s,t,len);</span><br><span class="line">    sh-&gt;len=len;</span><br><span class="line">    sh-&gt;<span class="built_in">free</span>=totlen=len;</span><br><span class="line">    <span class="keyword">return</span> s;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="4-_感想">4. 感想</h3><ul>
-<li>深入了解调查业务需求。设计恰到好处的元数据结构以改善性能/改善代码结构</li>
-</ul>
-<hr>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/01/git指南/" itemprop="url">
-                git 指南
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p>##github相关</p>
-<ol>
-<li>403 fatal: HTTP request failed解决方法：<br>修改 .git/config 为<a href="https://wenduo@github.com" target="_blank" rel="external">https://wenduo@github.com</a>……..</li>
-</ol>
-<hr>
-<p>##git 拉取</p>
-<ol>
-<li>拉取某个远程分支到本地，同时本地分支直接push到远端<br>git checkout -b branch origin/branch</li>
-</ol>
-<hr>
-<p>##git 创建</p>
-<ol>
-<li><p>想直接要git的某一个tag<br>git checkout tags/riak-1.4.2 -b tag1.4</p>
-</li>
-<li><p>在github上面, 想在dev上面连接上github, 要在github配置一下你再dev的id_rsa.pub就可以了. 然后就可以当用户提交了. 这样只要建立一个项目, 就可以随时的提交了</p>
-</li>
-<li><p>git的config git config —-list 就可以了</p>
-</li>
-<li><p>git rm –cached filename<br>这个git 把已经提交上去的文件删除掉</p>
-</li>
-<li><p>git config –global core.excludesfile ~/.gitignore_global<br>然后这样就可以配置全局的gitignore</p>
-</li>
-<li><p>git stash 就可以把当前的提交放在stash里面, 这个时候你的分支下面所有的东西就存起来, 变成线上的分支情况了. 什么时候 然后想要的时候再git stash pop 出来就可以了</p>
-</li>
-<li><p>git stash 完以后, git stash branch multiGet, 把stash里面的代码生成出multiGet分支. 然后你在multiGet里面commit 以后, 再checkout回 master 就可以了</p>
-</li>
-<li><p>git 回退到历史版本.<br>git reset 72066610b8f78e042091d762606c4fdca431c028<br>所以一个回退到历史版本, 然后把线上这个版本放在一个分支的操作流程是 先git reset 到某一个版本, 然后git stash, 然后 git stash branch multiGet(这里建立一个分支) ; git commit (提交到本地分支). 然后 checkout master. 然后直接git push -f origin master 就可以覆盖线上的了.</p>
-</li>
-<li><p>git checkout local/proxy.ini 就可以将本地的修改给去掉了. 相当于svn revert了</p>
-</li>
-<li><p>git config –global color.ui auto</p>
-</li>
-<li><p>git config –global alias.st status</p>
-</li>
-<li><p>把线上的某一个branch 直接拉下来在本地开发, 以后pull push 就对应线上的这个branch了<br>git checkout -b 2.0 origin/2.0<br>这里就是把线上的 2.0 版本拉下来, 在本地直接建立一个2.0的分支</p>
-</li>
-<li><p>强调一下 把线上的某一个分支拉下来开发 git checkout -b experimental origin/experimental</p>
-</li>
-<li><p>git ignore 某一个项目的.gitignore. 修改.git/info/exclude 这个项目下面的这个文件即可</p>
-</li>
-</ol>
-<p>15.git tag -a 1.5.1 d087e24f699badca8dd399b7ee8e5ea7619011c3 -m “1.5.1 tag”<br>checkout 某一个tag 的方法 git checkout -b 1.6.6 tags/1.6.6<br>添加一个以某一个版本为基础的叫1.5.1的tag<br>git push origin –tags<br>将这个tag添加到远程分支<br>删除tag 的方法<br>先在本地 git tag -d tag_name<br>然后 git push origin :refs/tags/tag_name<br>这样就把本地和远程的tag_name 这个tag 都删除掉了</p>
-<p>git fetch –tags 更新拉取线上最新的tags</p>
-<ol>
-<li><p>git 把多次的提交merge 成一个, 在master merge branch的时候<br>git merge –squash develop<br>这样在提交的时候develop上面所有的提交就变成一次提交</p>
-</li>
-<li><p>git reset HEAD local/proxy.ini 这句话把提交到本地的cached里面的文件重新拉回本地未提交区域</p>
-</li>
-<li><p>修改最后一次提交的注释信息<br>git commit –amend 然后可以具体写修改的注释</p>
-</li>
-<li><p>git 删除远程上面的某个分支的办法<br>git push origin :mario 这里就把 remotes/origin/mario 这个分支给删除掉了</p>
-</li>
-<li><p>当 git pull 的时候加入本地有很多东西没有加上去, 而你又不想要了. 那么就可以清除掉<br>error: The following untracked working tree files would be overwritten</p>
-</li>
-</ol>
-<p>解决方法 git clean -d -fx “”</p>
-<ol>
-<li><p>git 把本地的多次提交变成一次提交<br>git reset –soft HEAD~3 &amp;&amp;<br>git commit</p>
-</li>
-<li><p>git 忽略文件的权限<br>git ignore file permission<br>git config core.filemode false</p>
-</li>
-<li><p>git 将多次提交合并成一次提交, 在已经提交以后的方法<br>git diff master &gt; ~/a; git checkout master; git checkout -b pull_request; git apply ~/a; git commit -a -m “Pull Request”</p>
-</li>
-<li><p>git 碰到 unmerged 的时候, 不想要处理这些冲突的时候, 直接git reset 这些文件就可以</p>
-</li>
-<li><p>当遇到冲突并且你已经pull 的时候, 可以用这个 git-reflog 这个命令找出你merge 之前的版本.<br>然后强行的 git reset –hard dd659b7(版本号) 就可以了</p>
-</li>
-<li><p>git submodule</p>
-</li>
-</ol>
-<p>git submodule add <a href="https://github.com/chaconinc/DbConnector" target="_blank" rel="external">https://github.com/chaconinc/DbConnector</a></p>
-<p>git submodule add git@github.com:baotiao/pink.git ./third/pink<br>添加到指定目录</p>
-<p><a href="http://git-scm.com/book/en/v2/Git-Tools-Submodules" target="_blank" rel="external">http://git-scm.com/book/en/v2/Git-Tools-Submodules</a></p>
-<ol>
-<li>git clean -dxf<br>git在进行branch 切换的时候, 需要考虑到原分支下面还有一些未删除的多余信息, 所以要clean 一下</li>
-</ol>
-<p>分支操作：<br>删除本地分支：<br>  git tag -d 标签名<br>删除远程分支：<br>   git push origin :refs/tags/标签名  </p>
-<p>创建本地分支：<br>   git tag 标签名git push origin :refs/tags/标签名<br>推送到远端：<br>    git push origin 标签名  </p>
-<p>Git show </p>
-<p>##git stash</p>
-<ol>
-<li>git stash list</li>
-<li>git stash applyç</li>
-</ol>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/01/vim 使用/" itemprop="url">
-                vim使用
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><p>##常用</p>
-<ul>
-<li>调整格式：选中后 =<br>##跳转<br>##列编辑<br>列插入 ：ctrl+v shift+i<br>##命令模式</li>
-<li>% 代表全文 ，比如:%d</li>
-<li>全文替换 [addr]s/源字符串/目的字符串/[option]<br>eg: 1. %s/old/new/gc </li>
-<li>复制指定行： a,b y</li>
-</ul>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2015/08/01/protobuf/" itemprop="url">
-                protobuf
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2015-08-01T15:30:16+08:00" content="2015-08-01">
-            2015-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><h2 id="常见错误：">常见错误：</h2><ol>
-<li>解析错误：parsefromstring 传入char*<br>被\0 截断。应该改为parsefromarray,或先转换为string</li>
 </ol>
 </span>
         
@@ -1071,162 +1183,11 @@
 
 
     
-      
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      
-      
-        <h1 class="post-title" itemprop="name headline">
-          
-          
-            
-              <a class="post-title-link" href="/2014/08/01/代码大全/" itemprop="url">
-                代码大全
-              </a>
-            
-          
-        </h1>
-      
-
-      <div class="post-meta">
-        <span class="post-time">
-          發表於
-          <time itemprop="dateCreated" datetime="2014-08-01T15:30:16+08:00" content="2014-08-01">
-            2014-08-01
-          </time>
-        </span>
-
-        
-
-        
-          
-        
-      </div>
-    </header>
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody"><blockquote>
-<p>按照读书顺序整理<br>此版为草稿</p>
-</blockquote>
-<hr>
-<hr>
-<h1 id="第二部分：高质量代码">第二部分：高质量代码</h1><h2 id="第六章：可工作的类">第六章：可工作的类</h2><h4 id="a-好处">a.好处</h4><blockquote>
-<p>提高程序自说明性<br>隐藏细节<br>隔离复杂度<br>流畅的参数传递<br>容易重构<br>…</p>
-</blockquote>
-<p>public下实质就是对外开放的接口，而private则是封装的细节</p>
-<p>#####ADT：应采用尽可能高的抽象</p>
-<h4 id="b-接口设计原则">b.接口设计原则</h4><blockquote>
-<p>1.一个类只实现一个ADT，内聚性要高。对类内杂乱的函数：</p>
-<blockquote>
-<p>转移到其他类里，<br>转移为私用子函数</p>
-</blockquote>
-<p>2.使用一致的抽象层次，混乱的抽象会让程序难以理解：<br>事务层次的类不应该提供容器的操作窗口，<br>如果有操作需求，也应是事务概念的操作</p>
-<p>3.接口是对捕捉到的抽象进行选择，<br>4.检查是否存在相反操作需求<br>5.一半子程序使用一半数据，另一半子 程序使用另外一半数据，那么拆分类吧。<br>6.尽量把语义接口元素转化为编程接口元素。如使用断言等。</p>
-</blockquote>
-<p>总之，接口应该展示一致的抽象。</p>
-<h4 id="c-封装原则">c.封装原则</h4><p>对c++等语言代码中,不要在private部分暴露实现细节。<br>封装方法是<br><figure class="highlight actionscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> EmployImplymentation * m_implymenTation</span><br></pre></td></tr></table></figure></p>
-<p>而把细节放入implymentation类里。<br>至少读代码时别去私用部分里找细节</p>
-<h4 id="封装是对接口编程，而不是对内部实现细节编程。">封装是对接口编程，而不是对内部实现细节编程。</h4><h5 id="封装的思维:">封装的思维:</h5><p>如果一个人调用库时发现问题，不应该查阅源代码，而是联系作者去修改发布。类内实现细节不应该影响使用者编程。如：</p>
-<blockquote>
-<p>逻辑过程缺失：perform内包含initial，没读细节的使用者先initial再perform就会出bug</p>
-<p>假设过强：使用classA.num代替classB.num.客户不知道他们两个的num相同。</p>
-</blockquote>
-<p><em>紧密耦合事实上消除了封装性。</em></p>
-<h4 id="e-继承">e.继承</h4><ol>
-<li>种类：</li>
-</ol>
-<ul>
-<li><p>公有：<code>class a:public class baseClass;</code></p>
-<blockquote>
-<p>1.baseClass中public元素在a中还是public，base中private元素在a中不可见<br>2.代表 is a 关系</p>
-</blockquote>
-</li>
-<li><p>私有：<code>class b:public class base</code></p>
-<blockquote>
-<p>1.base中public元素在b中是private，base中private不可见</p>
-</blockquote>
-</li>
-</ul>
-<ol>
-<li>何时选择继承：<blockquote>
-<p>1.多个类的共有元素需要一个基类去集中<br>2.派生类必须能够通过基类的接口直接调用</p>
-</blockquote>
-</li>
-<li><p>LSP原则：使用时无须思考不同派生类的语义含义，即基类提供之接口让人直接理解派生类的行为如：</p>
-<blockquote>
-<p>loanAccount的interest和saveAccount中interest中语义不同，就不应在基类account中放入interest元素，interest的继承并没有减少程序员的思考量</p>
-</blockquote>
-</li>
-<li><p>不要过度设计。为未来工作着想的方式是让眼下之成果尽可能清晰简单。—只有一个派生类的继承很值得怀疑</p>
-</li>
-<li>case语句下多操作都很类似暗示着多态的需求。<br>而种类确实不同的操作则不必。</li>
-<li><p>继承体系尽可能低</p>
-</li>
-<li><p>几点注意事项：<br>1.避免万能类，应该把功能放入万能类他所操作的类上去。<br>2.避免动词命名的类：只有动作而无数据的类只应该是其他类的子程序。<br>####在软件的历史中，粒度的增长带来软件开发的进步。语句-子程序-类-包等。</p>
-</li>
-</ol>
-<hr>
-<h3 id="第七章：高质量子程序">第七章：高质量子程序</h3><h4 id="1-子程序作用">1.子程序作用</h4><p>1.子程序名提供逻辑抽象解释<br>2.避免重复代码<br>3.封装事务过程<br>…….</p>
-<h4 id="2-设计">2.设计</h4><p>内聚性：<br>&gt;<br>功能内聚性：只完成一个功能<br>顺序内聚性：顺序执行的操作由上一步ans求下一步<br>通信内聚性：操作共享数据但无其他联系<br>临时内聚    ：startup()等，不相关的操作组合在一起<br>逻辑内聚：通过传入的控制字段选择不同操作。如<br>inputAll（type）</p>
-<p>对逻辑内聚：</p>
-<blockquote>
-<p>  不应该用一个程序控制另外一个程序的处理方式。<br>     应把程序分为几个平行程序在上层调用。若有相似的底层操作，则封装成底层函数。<br>     但如程序仅为if/case之内选择不同函数，就成了常用的事件处理器。</p>
-</blockquote>
-<h4 id="3-函数命名">3.函数命名</h4><blockquote>
-<p>避免使用含糊的词 如：HandleOutput-&gt;FormatAndPrint</p>
-<p>找不到准确的词说明子程序可能需要修改</p>
-<p>描述程序做的所有事 ：一个动宾结构，object.function()则不必<br>   或者描述程序的返回值</p>
-<p>一个恰如其份但是糟糕的函数名说明需要重新设计</p>
-</blockquote>
-<p>子程序长度一般应少于200行</p>
-<h4 id="4-_参数">4. 参数</h4><blockquote>
-<p>1.接口参数按一定顺序排列，如：修改-输入-输出型参数<br>        考虑命名规则<br>   2.使用自己函数定义的工作变量,如:<br>  <code>int  workingVal=inputVal
- workingVal.......
-//注意这两个变量命名是很差的</code><br>3.尽量采用const关键字<br>4.以断言或注释解释参数的操作类型数值范围等<br>5.参数过多说明耦合紧密。人脑很难记住超过7个单词<br>7.确保形参实参一致<br>8.传递数据成员还是对象：<br>–取决于抽象</p>
-</blockquote>
-<p>######函数不要返回局部变量 </p>
-<h4 id="5-_宏程序">5. 宏程序</h4><blockquote>
-<p>1.参数要套括号==<br>2.整个表达式外要套括号<br>3.多条语句外套{}<br>4.除非必要，还是不要用了吧…</p>
-</blockquote>
-<hr>
-<h1 id="第六部分：变量">第六部分：变量</h1><p>代码被阅读的时间远远大于编写的时间，确保代码阅读方便。</p>
-<h2 id="一般事项">一般事项</h2><p>1.显式声明，初始化<br>2.就近声明和初始化<br>3.让变量的跨度和存活时间尽可能短以减少攻击窗口。（尽量不使用全局变量)<br> 把相关的语句放在一起<br>提取语句成为单独的子程序<br>4.抛弃变量时赋不合理的NULL值<br>5.变量晚绑定值可以获得灵活性（使用具名变量）<br>6.单个变量只用于单一用途<br>7.检查是否有未使用的已声明变量</p>
-<h2 id="变量命名">变量命名</h2><p>1.8到16个字符<br>2.体现问题而非解决方案<br>3.一致的命名变量。<br>如revenueTotal—expenseAverage<br>例外numCustomers<br>4.采用对仗词如old-new，source-target<br>5.用比i，j，k更具意义的词为大循环或多重循环的循环变量命名<br>6.temp说明程序员并没有完全的搞懂问题。<br>7.done，found,error等布尔变量。<br>8.枚举类型使用组前缀。</p>
-<blockquote>
-<p>######一.命名规则<br>1.命名规则为代码增加了结构，是一项全局决策。<br>2.用g_标识全局变量<br>3.变量首字母小写，函数首字母大写。</p>
-</blockquote>
-</span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/">&laquo;</a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/3/">&raquo;</a>
   </nav>
 
  </div>
@@ -1260,7 +1221,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-count">32</span>
               <span class="site-state-item-name">文章</span>
             </a>
           </div>
@@ -1274,7 +1235,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">標籤</span>
               </a>
           </div>
